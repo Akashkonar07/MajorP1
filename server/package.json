@@ -1,7 +1,7 @@
 {
-  "name": "viraasat-server",
+  "name": "vaibhav-laxmi-saree-server",
   "version": "1.0.0",
-  "description": "Viraasat Saree Store Backend",
+  "description": "Vaibhav Laxmi Saree demo backend (to be replaced by Supabase)",
   "main": "index.js",
   "scripts": {
     "start": "node index.js",

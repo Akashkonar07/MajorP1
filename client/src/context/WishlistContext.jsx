@@ -5,7 +5,7 @@ const WishlistContext = createContext();
 export const WishlistProvider = ({ children }) => {
   const [wishlist, setWishlist] = useState(() => {
     try {
-      const saved = localStorage.getItem('viraasat_wishlist');
+      const saved = localStorage.getItem('vls_wishlist');
       return saved ? JSON.parse(saved) : [];
     } catch {
       return [];
@@ -13,7 +13,7 @@ export const WishlistProvider = ({ children }) => {
   });
 
   useEffect(() => {
-    localStorage.setItem('viraasat_wishlist', JSON.stringify(wishlist));
+    localStorage.setItem('vls_wishlist', JSON.stringify(wishlist));
   }, [wishlist]);
 
   const toggleWishlist = (product) => {

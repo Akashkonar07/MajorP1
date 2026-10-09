@@ -46,10 +46,10 @@ const Header = () => {
           {/* Logo */}
           <Link to="/" className="flex items-center gap-2 shrink-0">
             <div className="w-10 h-10 bg-maroon-900 rounded-sm flex items-center justify-center">
-              <span className="text-white font-heading font-bold text-lg leading-none">VS</span>
+              <span className="text-white font-heading font-bold text-base leading-none">VLS</span>
             </div>
-            <span className="font-heading font-bold text-xl text-maroon-900 tracking-wide hidden sm:block">
-              VIRAASAT
+            <span className="font-heading font-bold text-xl text-maroon-900 tracking-wide whitespace-nowrap hidden sm:block">
+              Vaibhav Laxmi Saree
             </span>
           </Link>
 

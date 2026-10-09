@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { Link, useSearchParams } from 'react-router-dom';
 import axios from 'axios';
 import ProductCard from '../components/ProductCard';
-import FilterSidebar from '../components/FilterSidebar';
+import FilterSidebar, { MAX_PRICE } from '../components/FilterSidebar';
 
 const SORT_OPTIONS = [
   { value: 'newest', label: 'Newest First' },
@@ -19,7 +19,7 @@ const Collection = () => {
   const [page, setPage] = useState(1);
   const [sort, setSort] = useState('newest');
   const [loading, setLoading] = useState(true);
-  const [filters, setFilters] = useState({ occasion: [], fabric: [], region: [], color: [], minPrice: 0, maxPrice: 110000 });
+  const [filters, setFilters] = useState({ occasion: [], fabric: [], color: [], minPrice: 0, maxPrice: MAX_PRICE });
   const [filterOpen, setFilterOpen] = useState(false);
 
   useEffect(() => {
@@ -39,7 +39,7 @@ const Collection = () => {
     if (filters.fabric?.length) params.set('fabric', filters.fabric.join(','));
     if (filters.color?.length) params.set('color', filters.color.join(','));
     if (filters.minPrice) params.set('minPrice', filters.minPrice);
-    if (filters.maxPrice && filters.maxPrice < 110000) params.set('maxPrice', filters.maxPrice);
+    if (filters.maxPrice && filters.maxPrice < MAX_PRICE) params.set('maxPrice', filters.maxPrice);
 
     axios.get(`http://localhost:5000/api/products?${params.toString()}`)
       .then(res => {
@@ -51,7 +51,7 @@ const Collection = () => {
       .finally(() => setLoading(false));
   }, [page, sort, filters]);
 
-  const clearFilters = () => setFilters({ occasion: [], fabric: [], region: [], color: [], minPrice: 0, maxPrice: 110000 });
+  const clearFilters = () => setFilters({ occasion: [], fabric: [], color: [], minPrice: 0, maxPrice: MAX_PRICE });
 
   return (
     <main className="max-w-7xl mx-auto px-4 sm:px-6 py-8">
@@ -93,6 +93,12 @@ const Collection = () => {
             </select>
           </div>
         </div>
+      </div>
+
+      {/* Placeholder notice — remove once real products are added */}
+      <div className="flex items-start gap-2 bg-gold-700/10 border border-gold-700/20 rounded-sm px-4 py-3 mb-6 font-body text-xs text-charcoal">
+        <span className="material-symbols-outlined text-base text-gold-700">info</span>
+        <span>These are sample sarees for demonstration. Our real collection and photos are coming soon.</span>
       </div>
 
       <div className="flex gap-7">

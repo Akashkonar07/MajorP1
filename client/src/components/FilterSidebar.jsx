@@ -1,9 +1,10 @@
 import React, { useState } from 'react';
 
-const FABRICS = ['Katan Silk', 'Mulberry Silk', 'Georgette', 'Silk Organza', 'Silk Cotton Blend', 'Pure Silk'];
-const REGIONS = ['Varanasi, UP', 'Tamil Nadu', 'Patan, Gujarat', 'Chanderi, MP', 'Mysore, Karnataka', 'Uppada, AP', 'Dharmavaram, AP', 'Kanchipuram, TN'];
-const COLORS = ['Crimson', 'Emerald Green', 'Royal Blue', 'Ivory', 'Navy Blue', 'Maroon', 'Purple', 'Turquoise', 'Pastel Pink', 'Mint Green', 'Bottle Green'];
-const OCCASIONS = ['Wedding', 'Festive', 'Casual', 'Party', 'Festival'];
+// Lists match the placeholder sarees in server/data/products.json (real categories to come from the shop)
+const FABRICS = ['Cotton', 'Cotton Silk', 'Art Silk', 'Semi Silk', 'Soft Silk', 'Georgette', 'Chiffon', 'Crepe', 'Linen', 'Organza', 'Tissue', 'Synthetic'];
+const COLORS = ['Red', 'Maroon', 'Pastel Pink', 'Purple', 'Royal Blue', 'Navy Blue', 'Turquoise', 'Mint Green', 'Bottle Green', 'Mustard Yellow', 'Gold', 'Ivory'];
+const OCCASIONS = ['Daily Wear', 'Office Wear', 'Festive', 'Party', 'Wedding'];
+export const MAX_PRICE = 3000;
 
 const AccordionSection = ({ title, children, defaultOpen = false }) => {
   const [open, setOpen] = useState(defaultOpen);
@@ -82,17 +83,6 @@ const FilterSidebar = ({ filters, onFilterChange, onClear }) => {
         ))}
       </AccordionSection>
 
-      <AccordionSection title="Region">
-        {REGIONS.map(reg => (
-          <CheckOption
-            key={reg}
-            label={reg}
-            checked={(filters.region || []).includes(reg)}
-            onChange={() => toggle('region', reg)}
-          />
-        ))}
-      </AccordionSection>
-
       <AccordionSection title="Colour">
         <div className="flex flex-wrap gap-2">
           {COLORS.map(color => (
@@ -115,14 +105,14 @@ const FilterSidebar = ({ filters, onFilterChange, onClear }) => {
         <div className="space-y-3">
           <div className="flex justify-between font-body text-xs text-gray-500">
             <span>₹{(filters.minPrice || 0).toLocaleString('en-IN')}</span>
-            <span>₹{(filters.maxPrice || 110000).toLocaleString('en-IN')}</span>
+            <span>₹{(filters.maxPrice || MAX_PRICE).toLocaleString('en-IN')}</span>
           </div>
           <input
             type="range"
             min={0}
-            max={110000}
-            step={1000}
-            value={filters.maxPrice || 110000}
+            max={MAX_PRICE}
+            step={100}
+            value={filters.maxPrice || MAX_PRICE}
             onChange={(e) => onFilterChange({ ...filters, maxPrice: Number(e.target.value) })}
             className="w-full"
           />

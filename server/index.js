@@ -16,9 +16,9 @@ app.use('/images', express.static(path.join(__dirname, '../client/public/images'
 app.use('/api/products', productsRouter);
 
 app.get('/', (req, res) => {
-  res.json({ message: 'Viraasat API is running 🌸' });
+  res.json({ message: 'Vaibhav Laxmi Saree API is running' });
 });
 
 app.listen(PORT, () => {
-  console.log(`✅ Viraasat server running on http://localhost:${PORT}`);
+  console.log(`✅ Vaibhav Laxmi Saree server running on http://localhost:${PORT}`);
 });

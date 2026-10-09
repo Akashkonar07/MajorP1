@@ -8,14 +8,18 @@ router.get('/', (req, res) => {
 
   const { occasion, fabric, color, minPrice, maxPrice, page = 1, limit = 12, sort } = req.query;
 
+  // Filters arrive as comma-separated lists, e.g. fabric=Cotton,Linen → match any of them
+  const matchesAny = (value, list) =>
+    list.split(',').some(item => item.trim().toLowerCase() === value.toLowerCase());
+
   if (occasion) {
-    result = result.filter(p => p.occasion.toLowerCase().includes(occasion.toLowerCase()));
+    result = result.filter(p => matchesAny(p.occasion, occasion));
   }
   if (fabric) {
-    result = result.filter(p => p.fabric.toLowerCase().includes(fabric.toLowerCase()));
+    result = result.filter(p => matchesAny(p.fabric, fabric));
   }
   if (color) {
-    result = result.filter(p => p.color.toLowerCase().includes(color.toLowerCase()));
+    result = result.filter(p => matchesAny(p.color, color));
   }
   if (minPrice) {
     result = result.filter(p => p.price >= Number(minPrice));

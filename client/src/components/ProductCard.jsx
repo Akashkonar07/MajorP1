@@ -13,16 +13,12 @@ const ProductCard = ({ product }) => {
   const { toggleWishlist, isWishlisted } = useWishlist();
 
   const wishlisted = isWishlisted(product.id);
+  const outOfStock = product.stock === 0;
   const colorIndex = parseInt(product.id) % FALLBACK_COLORS.length;
 
   const badgeColor = {
-    'Bestseller': 'bg-gold-700 text-white',
-    'New Arrival': 'bg-maroon-900 text-white',
     'Low Stock': 'bg-red-800 text-white',
-    'Premium': 'bg-charcoal text-white',
-    'Heritage': 'bg-maroon-800 text-white',
-    'Trending': 'bg-emerald-700 text-white',
-    'Classic': 'bg-gold-800 text-white',
+    'Out of Stock': 'bg-gray-600 text-white',
   };
 
   return (
@@ -55,12 +51,20 @@ const ProductCard = ({ product }) => {
           </div>
         </div>
 
-        {/* Badge */}
-        {product.badge && (
-          <span className={`absolute top-3 left-3 text-[10px] font-body font-semibold px-2 py-0.5 rounded-sm ${badgeColor[product.badge] || 'bg-maroon-900 text-white'}`}>
-            {product.badge}
-          </span>
-        )}
+        {/* Badges */}
+        <div className="absolute top-3 left-3 flex flex-col items-start gap-1">
+          {product.badge && (
+            <span className={`text-[10px] font-body font-semibold px-2 py-0.5 rounded-sm ${badgeColor[product.badge] || 'bg-maroon-900 text-white'}`}>
+              {product.badge}
+            </span>
+          )}
+          {/* Placeholder products are marked until real sarees and photos are added */}
+          {product.placeholder && (
+            <span className="text-[10px] font-body font-semibold px-2 py-0.5 rounded-sm bg-white/90 text-charcoal border border-gray-200">
+              Sample
+            </span>
+          )}
+        </div>
 
         {/* Wishlist */}
         <button
@@ -79,9 +83,10 @@ const ProductCard = ({ product }) => {
         <div className="absolute bottom-0 left-0 right-0 translate-y-full group-hover:translate-y-0 transition-transform duration-300">
           <button
             onClick={() => addToCart(product)}
-            className="w-full bg-maroon-900 text-white font-body font-medium text-sm py-3 hover:bg-maroon-800 transition-colors"
+            disabled={outOfStock}
+            className="w-full bg-maroon-900 text-white font-body font-medium text-sm py-3 hover:bg-maroon-800 transition-colors disabled:bg-gray-400 disabled:cursor-not-allowed"
           >
-            Quick Add to Bag
+            {outOfStock ? 'Out of Stock' : 'Quick Add to Bag'}
           </button>
         </div>
       </div>

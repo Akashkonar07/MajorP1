@@ -1,5 +1,8 @@
 import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
+import { SHOP } from '../config/shop';
+
+const CURRENT_YEAR = new Date().getFullYear();
 
 const Footer = () => {
   const [email, setEmail] = useState('');
@@ -20,16 +23,16 @@ const Footer = () => {
           <div>
             <div className="flex items-center gap-2 mb-4">
               <div className="w-8 h-8 bg-maroon-900 rounded-sm flex items-center justify-center">
-                <span className="text-white font-heading font-bold text-sm">VS</span>
+                <span className="text-white font-heading font-bold text-[11px]">VLS</span>
               </div>
-              <span className="font-heading font-bold text-maroon-900 text-lg tracking-wide">VIRAASAT</span>
+              <span className="font-heading font-bold text-maroon-900 text-lg tracking-wide">{SHOP.name}</span>
             </div>
             <p className="font-body text-sm text-gray-600 leading-relaxed mb-4">
-              Your trusted destination for premium sarees in Kamothe, Navi Mumbai. Wide collection, quality checked, easy exchange — visit us in store.
+              Saree shop in Kamothe, Navi Mumbai since {SHOP.since}. Blouse piece included, fall/pico service and in-shop blouse stitching.
             </p>
-            <div className="flex items-center gap-1 text-xs font-body text-gray-500">
+            <div className="flex items-start gap-1 text-xs font-body text-gray-500">
               <span className="material-symbols-outlined text-sm text-maroon-900">store</span>
-              <span>Shop 6, Sector 35, Kamothe, Navi Mumbai</span>
+              <span>{SHOP.addressLines.join(' ')}</span>
             </div>
           </div>
 
@@ -38,10 +41,10 @@ const Footer = () => {
             <h4 className="font-body font-semibold text-charcoal text-sm tracking-widest uppercase mb-5">Quick Links</h4>
             <ul className="space-y-2.5">
               {[
-                { label: 'Kanjeevaram Silk', to: '/collection?fabric=kanjeevaram' },
-                { label: 'Banarasi Brocade', to: '/collection?fabric=banarasi' },
-                { label: 'Chanderi Organza', to: '/collection?fabric=chanderi' },
-                { label: 'Patola Masterpieces', to: '/collection?fabric=patola' },
+                { label: 'Cotton Sarees', to: '/collection?fabric=Cotton' },
+                { label: 'Art Silk Sarees', to: '/collection?fabric=Art Silk' },
+                { label: 'Georgette Sarees', to: '/collection?fabric=Georgette' },
+                { label: 'Soft Silk Sarees', to: '/collection?fabric=Soft Silk' },
                 { label: 'Store Locator', to: '/store-locator' },
               ].map(({ label, to }) => (
                 <li key={label}>
@@ -81,22 +84,32 @@ const Footer = () => {
 
           {/* Quality Promise */}
           <div>
-            <h4 className="font-body font-semibold text-charcoal text-sm tracking-widest uppercase mb-5">Quality Promise</h4>
-            <p className="font-body text-sm text-gray-600 leading-relaxed mb-5">
-              Every saree is quality checked before dispatch. Visit our Kamothe store to see and feel the collection before buying.
-            </p>
-            <div className="flex items-center gap-4">
-              <span className="material-symbols-outlined text-maroon-900 text-2xl">verified_user</span>
-              <span className="material-symbols-outlined text-maroon-900 text-2xl">local_shipping</span>
-              <span className="material-symbols-outlined text-maroon-900 text-2xl">eco</span>
-            </div>
+            <h4 className="font-body font-semibold text-charcoal text-sm tracking-widest uppercase mb-5">Contact Us</h4>
+            <ul className="space-y-2.5 font-body text-sm text-gray-600">
+              <li className="flex items-center gap-2">
+                <span className="material-symbols-outlined text-base text-maroon-900">call</span>
+                <a href={SHOP.phoneHref} className="hover:text-maroon-900 transition-colors">{SHOP.phoneDisplay}</a>
+              </li>
+              <li className="flex items-center gap-2">
+                <span className="material-symbols-outlined text-base text-maroon-900">chat</span>
+                <a href={SHOP.whatsappHref} target="_blank" rel="noopener noreferrer" className="hover:text-maroon-900 transition-colors">WhatsApp orders</a>
+              </li>
+              <li className="flex items-center gap-2">
+                <span className="material-symbols-outlined text-base text-maroon-900">mail</span>
+                <a href={`mailto:${SHOP.email}`} className="hover:text-maroon-900 transition-colors break-all">{SHOP.email}</a>
+              </li>
+              <li className="flex items-center gap-2">
+                <span className="material-symbols-outlined text-base text-maroon-900">schedule</span>
+                <span>Open {SHOP.hours}</span>
+              </li>
+            </ul>
           </div>
         </div>
 
         {/* Bottom bar */}
         <div className="pt-6 text-center">
           <p className="font-body text-xs text-gray-400">
-            © 2024 Viraasat Sarees, Kamothe Navi Mumbai. All rights reserved.
+            © {CURRENT_YEAR} {SHOP.name}, Kamothe, Navi Mumbai. All rights reserved.
           </p>
         </div>
       </div>

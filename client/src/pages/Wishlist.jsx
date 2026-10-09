@@ -2,14 +2,18 @@ import React from 'react';
 import { Link } from 'react-router-dom';
 import { useWishlist } from '../context/WishlistContext';
 import { useCart } from '../context/CartContext';
+import { SHOP } from '../config/shop';
 
 const Wishlist = () => {
   const { wishlist, removeFromWishlist } = useWishlist();
   const { addToCart } = useCart();
 
+  // Out-of-stock sarees stay in the wishlist and cannot be added to the bag
   const moveAllToBag = () => {
-    wishlist.forEach(item => addToCart(item));
-    wishlist.forEach(item => removeFromWishlist(item.id));
+    wishlist.filter(item => item.stock !== 0).forEach(item => {
+      addToCart(item);
+      removeFromWishlist(item.id);
+    });
   };
 
   const moveToBag = (item) => {
@@ -18,9 +22,11 @@ const Wishlist = () => {
   };
 
   const stockBadge = (stock) =>
-    stock === 'low-stock'
-      ? <span className="font-body text-[10px] font-semibold text-white bg-red-600 px-2 py-0.5 rounded-sm">Low Stock</span>
-      : <span className="font-body text-[10px] font-semibold text-white bg-emerald-700 px-2 py-0.5 rounded-sm">In Stock</span>;
+    stock === 0
+      ? <span className="font-body text-[10px] font-semibold text-white bg-gray-600 px-2 py-0.5 rounded-sm">Out of Stock</span>
+      : stock <= 1
+        ? <span className="font-body text-[10px] font-semibold text-white bg-red-600 px-2 py-0.5 rounded-sm">Low Stock</span>
+        : <span className="font-body text-[10px] font-semibold text-white bg-emerald-700 px-2 py-0.5 rounded-sm">In Stock</span>;
 
   if (wishlist.length === 0) {
     return (
@@ -101,10 +107,11 @@ const Wishlist = () => {
 
               <button
                 onClick={() => moveToBag(item)}
-                className="btn-primary flex items-center gap-1.5 text-sm py-2 px-4 w-full justify-center"
+                disabled={item.stock === 0}
+                className="btn-primary flex items-center gap-1.5 text-sm py-2 px-4 w-full justify-center disabled:opacity-50 disabled:cursor-not-allowed"
               >
                 <span className="material-symbols-outlined text-sm" style={{ fontVariationSettings: "'FILL' 1" }}>shopping_bag</span>
-                Move to Bag
+                {item.stock === 0 ? 'Out of Stock' : 'Move to Bag'}
               </button>
             </div>
           </div>
@@ -122,7 +129,7 @@ const Wishlist = () => {
             Discover More<br />Beautiful Designs
           </h2>
           <p className="font-body text-sm text-gray-600 mb-6 leading-relaxed max-w-sm">
-            Explore our latest festive drops featuring Chanderi organzas, Banarasi brocades, and classic Kanjeevaram silks.
+            Explore cotton, art silk, georgette and soft silk sarees for daily wear, festivals and weddings.
           </p>
           <div className="flex flex-wrap gap-3">
             <Link to="/collection" className="btn-primary flex items-center gap-2">
@@ -135,10 +142,10 @@ const Wishlist = () => {
         <div className="w-full md:w-96 min-h-[200px] bg-maroon-50 flex items-center justify-center">
           <div className="text-center p-8">
             <div className="w-20 h-20 bg-maroon-900 rounded-full flex items-center justify-center mx-auto mb-4">
-              <span className="font-heading font-bold text-white text-2xl">VS</span>
+              <span className="font-heading font-bold text-white text-xl">VLS</span>
             </div>
-            <p className="font-heading text-maroon-900 text-lg font-semibold">500+ Designs</p>
-            <p className="font-body text-xs text-gray-500 mt-1">Always in Stock</p>
+            <p className="font-heading text-maroon-900 text-lg font-semibold">{SHOP.name}</p>
+            <p className="font-body text-xs text-gray-500 mt-1">Kamothe, Navi Mumbai · Since {SHOP.since}</p>
           </div>
         </div>
       </div>

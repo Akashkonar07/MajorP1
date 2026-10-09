@@ -1,26 +1,11 @@
-import React, { useState } from 'react';
+import React from 'react';
 import { Link } from 'react-router-dom';
 import { useCart } from '../context/CartContext';
+import { SHOP } from '../config/shop';
 
 const Cart = () => {
   const { cart, removeFromCart, updateQty, cartTotal } = useCart();
-  const [promoCode, setPromoCode] = useState('');
-  const [promoApplied, setPromoApplied] = useState(false);
-  const [promoError, setPromoError] = useState('');
-
-  const gst = Math.round(cartTotal * 0.05);
-  const discount = promoApplied ? Math.round(cartTotal * 0.1) : 0;
-  const finalTotal = cartTotal - discount + gst;
-
-  const applyPromo = () => {
-    if (promoCode.toUpperCase() === 'VIRAASAT10') {
-      setPromoApplied(true);
-      setPromoError('');
-    } else {
-      setPromoError('Invalid promo code');
-      setPromoApplied(false);
-    }
-  };
+  // Delivery charge and final total are calculated on the server at checkout (build step 6)
 
   if (cart.length === 0) {
     return (
@@ -62,7 +47,7 @@ const Cart = () => {
               {/* Info */}
               <div className="flex-1 min-w-0">
                 <h3 className="font-heading font-semibold text-base text-charcoal leading-tight mb-1">{item.name}</h3>
-                <p className="font-body text-xs text-gray-500 mb-2">{item.fabric} • {item.dyeType || 'Antique Gold Zari'}</p>
+                <p className="font-body text-xs text-gray-500 mb-2">{item.fabric}{item.color ? ` • ${item.color}` : ''}</p>
                 {item.blouseDetail && (
                   <div className="flex items-center gap-1.5 text-xs font-body text-emerald-700 bg-emerald-50 inline-flex px-2 py-1 rounded-full mb-3">
                     <span className="material-symbols-outlined text-xs" style={{ fontVariationSettings: "'FILL' 1" }}>check_circle</span>
@@ -112,9 +97,9 @@ const Cart = () => {
           <div className="bg-amber-50 border border-amber-200 rounded-lg p-4 flex gap-3 items-start">
             <span className="material-symbols-outlined text-amber-700 text-xl shrink-0">info</span>
             <div>
-              <p className="font-body font-semibold text-sm text-amber-800">Visit Our Kamothe Store</p>
+              <p className="font-body font-semibold text-sm text-amber-800">Visit Our Kamothe Shop</p>
               <p className="font-body text-xs text-amber-700 mt-0.5">
-                Step into our store at Sector 35, Kamothe, Navi Mumbai. Experience the sarees in person before buying — get ₹500 in-store discount.
+                See the sarees in person at {SHOP.addressShort}. Open {SHOP.hours}.
               </p>
             </div>
           </div>
@@ -130,45 +115,16 @@ const Cart = () => {
                 <span className="text-gray-600">Subtotal ({cart.reduce((s, i) => s + i.qty, 0)} items)</span>
                 <span className="font-medium text-charcoal">₹{cartTotal.toLocaleString('en-IN')}</span>
               </div>
-              {promoApplied && (
-                <div className="flex justify-between font-body text-sm">
-                  <span className="text-emerald-700">Promo (VIRAASAT10)</span>
-                  <span className="font-medium text-emerald-700">−₹{discount.toLocaleString('en-IN')}</span>
-                </div>
-              )}
               <div className="flex justify-between font-body text-sm">
-                <span className="text-gray-600">Insured Shipping</span>
-                <span className="font-semibold text-emerald-700">FREE</span>
-              </div>
-              <div className="flex justify-between font-body text-sm">
-                <span className="text-gray-600">Estimated GST (5%)</span>
-                <span className="font-medium text-charcoal">₹{gst.toLocaleString('en-IN')}</span>
+                <span className="text-gray-600">Delivery</span>
+                <span className="font-medium text-gray-500">Calculated at checkout</span>
               </div>
               <hr className="border-gray-100" />
               <div className="flex justify-between font-body text-sm font-bold">
-                <span className="text-charcoal">Total Amount</span>
-                <span className="text-maroon-900 text-base">₹{finalTotal.toLocaleString('en-IN')}</span>
+                <span className="text-charcoal">Total (before delivery)</span>
+                <span className="text-maroon-900 text-base">₹{cartTotal.toLocaleString('en-IN')}</span>
               </div>
             </div>
-
-            {/* Promo */}
-            <div className="flex gap-2 mb-5">
-              <input
-                type="text"
-                value={promoCode}
-                onChange={(e) => { setPromoCode(e.target.value); setPromoError(''); }}
-                placeholder="Promo Code (e.g. VIRAASAT10)"
-                className="flex-1 border border-gray-200 rounded-sm px-3 py-2 text-xs font-body focus:outline-none focus:border-maroon-900"
-              />
-              <button
-                onClick={applyPromo}
-                className="px-4 py-2 bg-maroon-900 text-white font-body font-semibold text-xs rounded-sm hover:bg-maroon-800 transition-colors"
-              >
-                Apply
-              </button>
-            </div>
-            {promoError && <p className="font-body text-xs text-red-500 -mt-3 mb-3">{promoError}</p>}
-            {promoApplied && <p className="font-body text-xs text-emerald-700 -mt-3 mb-3">✓ 10% discount applied!</p>}
 
             {/* Checkout CTA */}
             <button className="btn-gold w-full flex items-center justify-center gap-2 py-4">
@@ -179,9 +135,9 @@ const Cart = () => {
             {/* Trust */}
             <div className="grid grid-cols-3 gap-3 mt-5">
               {[
-                { icon: 'local_shipping', label: 'Free Insured Shipping' },
-                { icon: 'swap_horiz', label: '7-Day Easy Returns' },
-                { icon: 'verified', label: 'Quality Checked' },
+                { icon: 'local_shipping', label: 'Delivery All Over India' },
+                { icon: 'swap_horiz', label: 'Returns & Exchange' },
+                { icon: 'currency_rupee', label: 'UPI Payment' },
               ].map(({ icon, label }) => (
                 <div key={label} className="text-center">
                   <span className="material-symbols-outlined text-maroon-900 text-2xl block mb-1">{icon}</span>
