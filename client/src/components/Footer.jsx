@@ -71,11 +71,11 @@ const Footer = () => {
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
                 placeholder="Your email address"
-                className="flex-1 border border-gray-200 rounded-sm px-3 py-2 text-sm font-body focus:outline-none focus:border-maroon-900 bg-white"
+                className="flex-1 min-w-0 border border-gray-200 rounded-sm px-3 py-2 text-sm font-body focus:outline-none focus:border-maroon-900 bg-white"
               />
               <button
                 type="submit"
-                className="bg-maroon-900 text-white font-body font-semibold px-4 py-2 rounded-sm text-sm hover:bg-maroon-800 transition-colors"
+                className="shrink-0 bg-maroon-900 text-white font-body font-semibold px-4 py-2 rounded-sm text-sm hover:bg-maroon-800 transition-colors"
               >
                 Join
               </button>

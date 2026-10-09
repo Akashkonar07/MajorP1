@@ -1,10 +1,12 @@
 // Real shop details (from project brief §2). Change them here, not in individual pages.
 // In build step 9 these move into the Supabase `settings` table.
 
+// Starts with the shop name so Google Maps finds the exact shop, not just the building
 const ADDRESS_LINES = [
-  'Shop No. 15, Surmalar Building, Sector 36,',
-  'Near Shree Mahalaxmi Ladies Tailor, Kamothe,',
-  'Navi Mumbai – 410209, Maharashtra',
+  'Vaibhav Laxmi Saree, Shop No. 15,',
+  'Soormalhar Apartment Complex, Nirmala CHS,',
+  'Sector 36, Kamothe, Mansarovar,',
+  'Thane, Panvel, Maharashtra 410209, India',
 ];
 
 export const SHOP = {
@@ -12,7 +14,7 @@ export const SHOP = {
   since: 2016,
   proprietor: 'Mrs. Mamta Bhandari',
   addressLines: ADDRESS_LINES,
-  addressShort: 'Shop No. 15, Surmalar Building, Sector 36, Kamothe, Navi Mumbai',
+  addressShort: 'Shop No. 15, Soormalhar Apartment Complex, Sector 36, Kamothe',
   phoneDisplay: '+91 93200 79225',
   phoneHref: 'tel:+919320079225',
   whatsappHref: 'https://wa.me/919320079225',
