@@ -1,0 +1,338 @@
+[
+  {
+    "id": "1",
+    "name": "Mayura Peacock Brocade Saree",
+    "fabric": "Pure Katan Silk",
+    "region": "Varanasi, UP",
+    "color": "Royal Blue & Gold",
+    "colorCode": "#1a237e",
+    "occasion": "Wedding",
+    "price": 62399,
+    "originalPrice": 75000,
+    "discount": 17,
+    "stock": "in-stock",
+    "badge": "Bestseller",
+    "images": [
+      "/images/saree1-main.jpg",
+      "/images/saree1-thumb2.jpg",
+      "/images/saree1-thumb3.jpg",
+      "/images/saree1-thumb4.jpg"
+    ],
+    "description": "A spectacular peacock brocade saree woven in Varanasi with intricate zari work depicting the beauty of the peacock feather. The rich katan silk base gives it an unmatched drape and sheen.",
+    "blouseDetail": "Unstitched Blouse Piece Included (80cm)",
+    "dyeType": "Antique Gold Tested",
+    "careInstructions": [
+      "Dry Clean Only: Entrust your saree to professionals who specialize in luxury fabrics.",
+      "Storage: Wrap your saree in unbleached muslin cotton cloth and store in a dry, dark place away from direct sunlight.",
+      "Air Regularly: Unfold and air the saree in gentle shade every few months to preserve the silk lustre."
+    ]
+  },
+  {
+    "id": "2",
+    "name": "Zardosi Emerald Katan Silk Saree",
+    "fabric": "Pure Katan Silk",
+    "region": "Varanasi, UP",
+    "color": "Emerald Green & Antique Gold",
+    "colorCode": "#1b5e20",
+    "occasion": "Festive",
+    "price": 38500,
+    "originalPrice": 46000,
+    "discount": 16,
+    "stock": "low-stock",
+    "badge": "Low Stock",
+    "images": [
+      "/images/saree2-main.jpg",
+      "/images/saree2-thumb2.jpg",
+      "/images/saree2-thumb3.jpg",
+      "/images/saree2-thumb4.jpg"
+    ],
+    "description": "Crafted in Varanasi using traditional kadhua weaving techniques, featuring intricate floral vines in antique gold zardosi work on a rich emerald green katan silk base.",
+    "blouseDetail": "Unstitched Brocade Blouse Piece Included",
+    "dyeType": "Antique Gold Tested",
+    "careInstructions": [
+      "Dry Clean Only: Entrust your saree to professionals who specialize in luxury fabrics.",
+      "Storage: Wrap your saree in unbleached muslin cotton cloth.",
+      "Air Regularly: Unfold and air the saree every few months."
+    ]
+  },
+  {
+    "id": "3",
+    "name": "Nava Benarasi Organza Saree",
+    "fabric": "Silk Organza",
+    "region": "Varanasi, UP",
+    "color": "Ivory & Rose Gold",
+    "colorCode": "#f5e6d3",
+    "occasion": "Wedding",
+    "price": 24399,
+    "originalPrice": 30000,
+    "discount": 19,
+    "stock": "in-stock",
+    "badge": "New Arrival",
+    "images": [
+      "/images/saree3-main.jpg",
+      "/images/saree3-thumb2.jpg",
+      "/images/saree3-thumb3.jpg",
+      "/images/saree3-thumb4.jpg"
+    ],
+    "description": "A diaphanous organza saree with delicate rose gold zari borders and scattered butti motifs. Perfect for summer weddings and receptions.",
+    "blouseDetail": "Unstitched Blouse Piece Included (80cm)",
+    "dyeType": "Eco-Friendly Dye",
+    "careInstructions": [
+      "Dry Clean Only.",
+      "Store in a cool, dry place.",
+      "Avoid exposure to direct sunlight."
+    ]
+  },
+  {
+    "id": "4",
+    "name": "Patola Double Ikat Masterpiece",
+    "fabric": "Pure Silk",
+    "region": "Patan, Gujarat",
+    "color": "Crimson & Ivory",
+    "colorCode": "#b71c1c",
+    "occasion": "Wedding",
+    "price": 93200,
+    "originalPrice": 110000,
+    "discount": 15,
+    "stock": "in-stock",
+    "badge": "Premium",
+    "images": [
+      "/images/saree4-main.jpg",
+      "/images/saree4-thumb2.jpg",
+      "/images/saree4-thumb3.jpg",
+      "/images/saree4-thumb4.jpg"
+    ],
+    "description": "A prized double ikat Patola saree from Patan, Gujarat — one of the rarest weaves in the world. Each geometric motif is resist-dyed before weaving to achieve perfect symmetry.",
+    "blouseDetail": "Running Blouse Piece Included (1m)",
+    "dyeType": "Natural Vegetable Dye",
+    "careInstructions": [
+      "Dry Clean Only.",
+      "Store wrapped separately in soft muslin.",
+      "Never wring or twist the fabric."
+    ]
+  },
+  {
+    "id": "5",
+    "name": "Mayurpankh Crimson Brocade Saree",
+    "fabric": "Pure Mulberry Silk",
+    "region": "Tamil Nadu",
+    "color": "Crimson & Gold",
+    "colorCode": "#c62828",
+    "occasion": "Wedding",
+    "price": 45999,
+    "originalPrice": 58000,
+    "discount": 21,
+    "stock": "in-stock",
+    "badge": "Bestseller",
+    "images": [
+      "/images/saree5-main.jpg",
+      "/images/saree5-thumb2.jpg",
+      "/images/saree5-thumb3.jpg",
+      "/images/saree5-thumb4.jpg"
+    ],
+    "description": "A magnificent Kanjeevaram saree in deep crimson with a contrasting gold border, woven using pure mulberry silk threads and genuine 24k gold-tested zari.",
+    "blouseDetail": "Unstitched Blouse Piece Included (80cm)",
+    "dyeType": "Antique Gold Tested",
+    "careInstructions": [
+      "Dry Clean Only.",
+      "Store in a silk bag or muslin cloth.",
+      "Air regularly to maintain sheen."
+    ]
+  },
+  {
+    "id": "6",
+    "name": "Varanasi Royal Kanjeevaram",
+    "fabric": "Pure Mulberry Silk",
+    "region": "Varanasi, UP",
+    "color": "Deep Maroon & Gold",
+    "colorCode": "#5d0325",
+    "occasion": "Wedding",
+    "price": 28500,
+    "originalPrice": 34000,
+    "discount": 16,
+    "stock": "in-stock",
+    "badge": "Classic",
+    "images": [
+      "/images/saree6-main.jpg",
+      "/images/saree6-thumb2.jpg",
+      "/images/saree6-thumb3.jpg",
+      "/images/saree6-thumb4.jpg"
+    ],
+    "description": "A timeless deep maroon saree with antique gold zari border. The rich mulberry silk base drapes beautifully and the zari work adds a royal touch.",
+    "blouseDetail": "Unstitched Blouse Piece Included (80cm)",
+    "dyeType": "Antique Gold Tested",
+    "careInstructions": [
+      "Dry Clean Only.",
+      "Store in a cool, dark place.",
+      "Air regularly to maintain silk sheen."
+    ]
+  },
+  {
+    "id": "7",
+    "name": "Chanderi Tissue Organza Saree",
+    "fabric": "Silk Cotton Blend",
+    "region": "Chanderi, MP",
+    "color": "Mint Green & Silver",
+    "colorCode": "#80cbc4",
+    "occasion": "Casual",
+    "price": 14200,
+    "originalPrice": 18000,
+    "discount": 21,
+    "stock": "in-stock",
+    "badge": "New Arrival",
+    "images": [
+      "/images/saree7-main.jpg",
+      "/images/saree7-thumb2.jpg",
+      "/images/saree7-thumb3.jpg",
+      "/images/saree7-thumb4.jpg"
+    ],
+    "description": "A lightweight Chanderi tissue saree with delicate silver zari weave. The silk-cotton blend gives it a comfortable drape perfect for daywear and casual occasions.",
+    "blouseDetail": "Unstitched Brocade Blouse Piece Included",
+    "dyeType": "Natural Dye",
+    "careInstructions": [
+      "Dry Clean Preferred.",
+      "Can be gently hand washed in cold water.",
+      "Do not wring; dry in shade."
+    ]
+  },
+  {
+    "id": "8",
+    "name": "Banarasi Jamdani Floral Silk",
+    "fabric": "Pure Silk",
+    "region": "Varanasi, UP",
+    "color": "Pastel Pink & Gold",
+    "colorCode": "#f8bbd0",
+    "occasion": "Festive",
+    "price": 31500,
+    "originalPrice": 39000,
+    "discount": 19,
+    "stock": "in-stock",
+    "badge": "Trending",
+    "images": [
+      "/images/saree8-main.jpg",
+      "/images/saree8-thumb2.jpg",
+      "/images/saree8-thumb3.jpg",
+      "/images/saree8-thumb4.jpg"
+    ],
+    "description": "An exquisite Banarasi Jamdani saree with floral discontinuous supplementary weft technique. The delicate pastel pink base with gold motifs makes it perfect for festive celebrations.",
+    "blouseDetail": "Unstitched Blouse Piece Included (80cm)",
+    "dyeType": "Eco-Friendly Dye",
+    "careInstructions": [
+      "Dry Clean Only.",
+      "Store flat in a cool, dry place.",
+      "Handle with care to preserve the delicate jamdani work."
+    ]
+  },
+  {
+    "id": "9",
+    "name": "Mysore Georgette Crepe Saree",
+    "fabric": "Pure Georgette",
+    "region": "Mysore, Karnataka",
+    "color": "Navy Blue & Silver",
+    "colorCode": "#1a237e",
+    "occasion": "Party",
+    "price": 19800,
+    "originalPrice": 25000,
+    "discount": 21,
+    "stock": "in-stock",
+    "badge": null,
+    "images": [
+      "/images/saree9-main.jpg",
+      "/images/saree9-thumb2.jpg",
+      "/images/saree9-thumb3.jpg",
+      "/images/saree9-thumb4.jpg"
+    ],
+    "description": "A flowing Mysore georgette saree with delicate silver embroidery. The lightweight fabric drapes effortlessly and is perfect for parties and evening events.",
+    "blouseDetail": "Unstitched Blouse Piece Included (80cm)",
+    "dyeType": "Eco-Friendly Dye",
+    "careInstructions": [
+      "Dry Clean Only.",
+      "Store folded with tissue paper.",
+      "Avoid direct heat."
+    ]
+  },
+  {
+    "id": "10",
+    "name": "Uppada Jamdani Pure Silk Saree",
+    "fabric": "Pure Silk",
+    "region": "Uppada, Andhra Pradesh",
+    "color": "Turquoise & Gold",
+    "colorCode": "#00897b",
+    "occasion": "Festival",
+    "price": 42000,
+    "originalPrice": 52000,
+    "discount": 19,
+    "stock": "in-stock",
+    "badge": "Premium",
+    "images": [
+      "/images/saree10-main.jpg",
+      "/images/saree10-thumb2.jpg",
+      "/images/saree10-thumb3.jpg",
+      "/images/saree10-thumb4.jpg"
+    ],
+    "description": "A rare Uppada Jamdani saree from coastal Andhra Pradesh, known for its ultra-lightweight feel and intricate jamdani patterns woven in gold zari on a turquoise silk base.",
+    "blouseDetail": "Running Blouse Piece Included (1m)",
+    "dyeType": "Natural Color Safe",
+    "careInstructions": [
+      "Dry Clean Only.",
+      "Store in breathable muslin bag.",
+      "Air once every 3 months."
+    ]
+  },
+  {
+    "id": "11",
+    "name": "Dharmavaram Pure Silk Saree",
+    "fabric": "Pure Silk",
+    "region": "Dharmavaram, AP",
+    "color": "Bottle Green & Gold",
+    "colorCode": "#1b5e20",
+    "occasion": "Wedding",
+    "price": 36000,
+    "originalPrice": 44000,
+    "discount": 18,
+    "stock": "low-stock",
+    "badge": "Low Stock",
+    "images": [
+      "/images/saree11-main.jpg",
+      "/images/saree11-thumb2.jpg",
+      "/images/saree11-thumb3.jpg",
+      "/images/saree11-thumb4.jpg"
+    ],
+    "description": "A grand Dharmavaram silk saree in bottle green with a broad gold zari border. Perfect for weddings and special occasions.",
+    "blouseDetail": "Unstitched Blouse Piece Included (80cm)",
+    "dyeType": "Antique Gold Tested",
+    "careInstructions": [
+      "Dry Clean Only.",
+      "Store with mothballs in a cool place.",
+      "Air regularly."
+    ]
+  },
+  {
+    "id": "12",
+    "name": "Kanjivaram Pure Silk Temple Border",
+    "fabric": "Pure Mulberry Silk",
+    "region": "Kanchipuram, Tamil Nadu",
+    "color": "Purple & Gold",
+    "colorCode": "#6a1b9a",
+    "occasion": "Wedding",
+    "price": 55000,
+    "originalPrice": 68000,
+    "discount": 19,
+    "stock": "in-stock",
+    "badge": "Heritage",
+    "images": [
+      "/images/saree12-main.jpg",
+      "/images/saree12-thumb2.jpg",
+      "/images/saree12-thumb3.jpg",
+      "/images/saree12-thumb4.jpg"
+    ],
+    "description": "A regal Kanjivaram saree in royal purple with a classic temple border in antique gold zari. The contrast pallu adds drama and elegance to this timeless piece.",
+    "blouseDetail": "Unstitched Blouse Piece Included (80cm)",
+    "dyeType": "Antique Gold Tested",
+    "careInstructions": [
+      "Dry Clean Only.",
+      "Store wrapped in muslin cloth.",
+      "Keep away from moisture."
+    ]
+  }
+]
