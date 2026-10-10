@@ -20,7 +20,7 @@ const TRUST_BADGES = [
   { icon: 'store', title: 'Visit Our Kamothe Shop', sub: 'Sector 36, Kamothe, Navi Mumbai' },
   { icon: 'local_shipping', title: 'Delivery All Over India', sub: 'Delivery charges apply' },
   { icon: 'swap_horiz', title: 'Returns & Exchange', sub: 'Call or WhatsApp us' },
-  { icon: 'content_cut', title: 'Blouse Piece Included', sub: 'In-shop tailor & fall/pico' },
+  { icon: 'content_cut', title: 'Blouse Piece Included', sub: 'In-shop tailor, fall & beading' },
 ];
 
 // Placeholder sarees — same id, price and details as server/data/products.json (replaced by Supabase in build step 3)
@@ -257,7 +257,7 @@ const Home = () => {
                   "A saree is not merely six yards of fabric; it is an unstitched epic woven with patience, prayer, and generational pride."
                 </blockquote>
                 <p className="font-body text-base text-gray-600 leading-relaxed">
-                  Vaibhav Laxmi Saree has been a saree shop in Kamothe, Navi Mumbai since 2016, run by Mrs. Mamta Bhandari. We keep sarees for every age group and occasion, with a blouse piece included, fall/pico service and an in-shop tailor for blouse stitching.
+                  Vaibhav Laxmi Saree has been a saree shop in Kamothe, Navi Mumbai since 2016, run by Mrs. Mamta Bhandari. We keep fancy, designer printed and partywear sarees for every age group and occasion, plus lehengas and petticoats — with a blouse piece included, fall &amp; beading / pico and an in-shop tailor for blouse stitching.
                 </p>
                 <div className="pt-2 flex items-center gap-10">
                   <div>

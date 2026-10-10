@@ -10,7 +10,7 @@ const FAQS = [
   },
   {
     q: 'Can I get my blouse stitched at the shop?',
-    a: 'Yes. Every saree comes with a blouse piece, and our in-shop tailor stitches blouses. Fall/pico service is also available. Ask us at the counter or on WhatsApp for charges and timing.',
+    a: 'Yes. Every saree comes with a blouse piece, and our in-shop tailor stitches blouses. Fall & beading / pico is also available. Ask us at the counter or on WhatsApp for charges and timing.',
   },
   {
     q: 'Do you deliver outside Navi Mumbai?',
@@ -66,7 +66,7 @@ const StoreLocator = () => {
             <span className="text-maroon-900">in Kamothe</span>
           </h1>
           <p className="font-body text-sm text-gray-600 max-w-md leading-relaxed mb-6">
-            See and feel the sarees in person. Blouse piece included with every saree, fall/pico service and an in-shop tailor for blouse stitching.
+            See and feel the sarees in person. Sarees, lehengas and petticoats. Blouse piece included with every saree, fall &amp; beading / pico and an in-shop tailor for blouse stitching.
           </p>
           <div className="flex flex-wrap gap-3">
             <a
@@ -166,7 +166,7 @@ const StoreLocator = () => {
           <p className="section-label mb-2">Have a Question?</p>
           <h2 className="font-heading text-3xl sm:text-4xl font-semibold text-charcoal mb-3">Call or WhatsApp Us</h2>
           <p className="font-body text-sm text-gray-500 mb-6">
-            Ask about a saree, blouse stitching, fall/pico or your order. We are available {SHOP.hours}.
+            Ask about a saree, blouse stitching, fall &amp; beading / pico or your order. We are available {SHOP.hours}.
           </p>
           <div className="flex flex-col sm:flex-row gap-3 justify-center">
             <a href={SHOP.phoneHref} className="btn-primary flex items-center justify-center gap-2">

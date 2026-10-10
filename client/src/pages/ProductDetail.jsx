@@ -10,7 +10,7 @@ const WHY_US = [
   {
     icon: 'content_cut',
     title: 'Blouse Stitching In-Shop',
-    desc: 'Every saree comes with a blouse piece, and our in-shop tailor can stitch it for you. Fall/pico service is also available.',
+    desc: 'Every saree comes with a blouse piece, and our in-shop tailor can stitch it for you. Fall & beading / pico service is also available.',
   },
   {
     icon: 'local_shipping',
@@ -196,7 +196,7 @@ const ProductDetail = () => {
             {/* Services (prices to be confirmed with the shop) */}
             <div className="mb-6 flex items-start gap-2 font-body text-sm text-gray-600">
               <span className="material-symbols-outlined text-base text-maroon-900 mt-0.5">content_cut</span>
-              <span>Blouse stitching and fall/pico service available — ask us on WhatsApp.</span>
+              <span>Blouse stitching and fall &amp; beading / pico available — ask us on WhatsApp.</span>
             </div>
 
             {/* CTA */}

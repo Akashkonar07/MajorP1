@@ -24,7 +24,7 @@ const Footer = () => {
           <div>
             <img src={logoPrimary} alt="Vaibhav Laxmi Saree" className="h-24 w-auto mb-4" />
             <p className="font-body text-sm text-gray-600 leading-relaxed mb-4">
-              Saree shop in Kamothe, Navi Mumbai since {SHOP.since}. Blouse piece included, fall/pico service and in-shop blouse stitching.
+              Sarees, lehengas and petticoats in Kamothe, Navi Mumbai since {SHOP.since}. Blouse piece included, fall &amp; beading / pico and in-shop blouse stitching.
             </p>
             <div className="flex items-start gap-1 text-xs font-body text-gray-500">
               <span className="material-symbols-outlined text-sm text-maroon-900">store</span>

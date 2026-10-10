@@ -33,11 +33,12 @@ const run = async (label, db) => {
   const anyId = products.data ? (await db.from('products').select('id').limit(1)).data?.[0]?.id : null;
   const stock = await db.rpc('adjust_stock', { p_product_id: anyId, p_change: 5, p_reason: 'new_stock' });
   check('cannot change stock', !!stock.error, stock.error?.message);
-  check('cannot use Sold in shop', !!(await db.rpc('sold_in_shop', { p_product_id: anyId })).error);
+  check('cannot change shop stock', !!(await db.rpc('adjust_shop_stock', { p_item_id: anyId, p_change: 5, p_reason: 'received' })).error);
   check('cannot create an order directly', blocked(await db.from('orders')
     .insert({ subtotal: 1, total: 1, shipping_address: {} }).select()));
   check('cannot change settings', blocked(await db.from('settings').update({ upi_id: 'hacker@upi' }).eq('id', 1).select()));
-  for (const t of ['stock_movements', 'admin_activity_log']) {
+  check('cannot add a shop item', blocked(await db.from('shop_items').insert({ name: 'Hack', selling_price: 1 }).select()));
+  for (const t of ['stock_movements', 'admin_activity_log', 'shop_items', 'shop_stock_movements']) {
     check(`cannot read ${t}`, blocked(await db.from(t).select('*')));
   }
   const upload = await db.storage.from('product-images')
