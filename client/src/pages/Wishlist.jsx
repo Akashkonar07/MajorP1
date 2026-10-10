@@ -2,7 +2,7 @@ import React from 'react';
 import { Link } from 'react-router-dom';
 import { useWishlist } from '../context/WishlistContext';
 import { useCart } from '../context/CartContext';
-import { SHOP } from '../config/shop';
+import logoPrimary from '../assets/brand/logo-primary.svg';
 
 const Wishlist = () => {
   const { wishlist, removeFromWishlist } = useWishlist();
@@ -141,11 +141,8 @@ const Wishlist = () => {
         </div>
         <div className="w-full md:w-96 min-h-[200px] bg-maroon-50 flex items-center justify-center">
           <div className="text-center p-8">
-            <div className="w-20 h-20 bg-maroon-900 rounded-full flex items-center justify-center mx-auto mb-4">
-              <span className="font-heading font-bold text-white text-xl">VLS</span>
-            </div>
-            <p className="font-heading text-maroon-900 text-lg font-semibold">{SHOP.name}</p>
-            <p className="font-body text-xs text-gray-500 mt-1">Kamothe, Navi Mumbai · Since {SHOP.since}</p>
+            <img src={logoPrimary} alt="Vaibhav Laxmi Saree" className="h-32 w-auto mx-auto" />
+            <p className="font-body text-xs text-gray-500 mt-2">Kamothe, Navi Mumbai</p>
           </div>
         </div>
       </div>

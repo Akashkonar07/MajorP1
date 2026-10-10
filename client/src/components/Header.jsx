@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { Link, NavLink, useNavigate } from 'react-router-dom';
 import { useCart } from '../context/CartContext';
 import { useWishlist } from '../context/WishlistContext';
+import logoHorizontal from '../assets/brand/logo-horizontal.svg';
 
 const Header = () => {
   const { cartCount } = useCart();
@@ -42,15 +43,10 @@ const Header = () => {
       }`}
     >
       <div className="max-w-7xl mx-auto px-4 sm:px-6">
-        <div className="flex items-center justify-between h-16 gap-4">
-          {/* Logo */}
-          <Link to="/" className="flex items-center gap-2 shrink-0">
-            <div className="w-10 h-10 bg-maroon-900 rounded-sm flex items-center justify-center">
-              <span className="text-white font-heading font-bold text-base leading-none">VLS</span>
-            </div>
-            <span className="font-heading font-bold text-xl text-maroon-900 tracking-wide whitespace-nowrap hidden sm:block">
-              Vaibhav Laxmi Saree
-            </span>
+        <div className="flex items-center justify-between h-16 md:h-20 gap-4">
+          {/* Logo — fixed height, width follows the file so it never stretches */}
+          <Link to="/" className="flex items-center shrink-0">
+            <img src={logoHorizontal} alt="Vaibhav Laxmi Saree" className="h-11 md:h-14 w-auto" />
           </Link>
 
           {/* Nav - Desktop */}

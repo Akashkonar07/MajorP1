@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { SHOP } from '../config/shop';
+import logoOnMaroon from '../assets/brand/logo-primary-on-maroon.svg';
 
 // Only facts confirmed by the shop (project brief §2). Add more when the owner confirms them.
 const FAQS = [
@@ -91,11 +92,8 @@ const StoreLocator = () => {
         {/* Store image placeholder */}
         <div className="w-full md:w-80 bg-maroon-900 flex items-center justify-center min-h-[220px] shrink-0">
           <div className="text-center p-8">
-            <div className="w-20 h-20 bg-white/20 rounded-full flex items-center justify-center mx-auto mb-4">
-              <span className="font-heading font-bold text-white text-2xl">VLS</span>
-            </div>
-            <p className="font-heading text-white text-xl font-semibold">{SHOP.name}</p>
-            <p className="font-body text-white/70 text-xs mt-1">Kamothe, Navi Mumbai</p>
+            <img src={logoOnMaroon} alt="Vaibhav Laxmi Saree" className="h-40 w-auto mx-auto" />
+            <p className="font-body text-white/70 text-xs mt-2">Kamothe, Navi Mumbai</p>
           </div>
         </div>
       </section>

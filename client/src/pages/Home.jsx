@@ -134,7 +134,7 @@ const Home = () => {
             Kamothe, Navi Mumbai · Since 2016
           </span>
           <h1 className="font-heading text-5xl md:text-7xl font-bold text-white mb-6 leading-tight tracking-tight max-w-5xl">
-            Sarees for Every<br />Occasion &amp; Every Age
+            A Saree for<br />Every Occasion
           </h1>
           <p className="font-body text-base md:text-xl text-white/80 mb-12 max-w-2xl font-light leading-relaxed">
             Daily wear to wedding sarees from ₹200 to ₹3,000. Blouse piece included, delivery all over India.

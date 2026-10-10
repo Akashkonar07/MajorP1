@@ -4,6 +4,7 @@ import axios from 'axios';
 import { useCart } from '../context/CartContext';
 import { useWishlist } from '../context/WishlistContext';
 import { SHOP } from '../config/shop';
+import logoIcon from '../assets/brand/icon.svg';
 
 const WHY_US = [
   {
@@ -123,7 +124,7 @@ const ProductDetail = () => {
                     className="w-32 h-32 rounded-full mx-auto mb-4 border-4 border-white shadow-lg"
                     style={{ backgroundColor: imagePlaceholders[selectedImage] }}
                   />
-                  <div className="font-heading text-maroon-900 text-3xl font-bold opacity-30">VLS</div>
+                  <img src={logoIcon} alt="Vaibhav Laxmi Saree" className="w-12 h-12 mx-auto opacity-60" />
                 </div>
                 {product.placeholder && (
                   <span className="absolute bottom-4 left-4 bg-white/90 text-charcoal font-body text-xs font-semibold px-3 py-1 rounded-full shadow-md">

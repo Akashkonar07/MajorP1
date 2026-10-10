@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { SHOP } from '../config/shop';
+import logoPrimary from '../assets/brand/logo-primary.svg';
 
 const CURRENT_YEAR = new Date().getFullYear();
 
@@ -21,12 +22,7 @@ const Footer = () => {
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-10 pb-10 border-b border-gray-200">
           {/* Brand */}
           <div>
-            <div className="flex items-center gap-2 mb-4">
-              <div className="w-8 h-8 bg-maroon-900 rounded-sm flex items-center justify-center">
-                <span className="text-white font-heading font-bold text-[11px]">VLS</span>
-              </div>
-              <span className="font-heading font-bold text-maroon-900 text-lg tracking-wide">{SHOP.name}</span>
-            </div>
+            <img src={logoPrimary} alt="Vaibhav Laxmi Saree" className="h-24 w-auto mb-4" />
             <p className="font-body text-sm text-gray-600 leading-relaxed mb-4">
               Saree shop in Kamothe, Navi Mumbai since {SHOP.since}. Blouse piece included, fall/pico service and in-shop blouse stitching.
             </p>
