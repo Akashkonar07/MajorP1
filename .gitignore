@@ -39,3 +39,8 @@ Thumbs.db
 *.njsproj
 *.sln
 *.sw?
+
+# Real catalogue: kept on the lead's laptop only. The GitHub repo is PUBLIC and
+# products.json holds the owner's private base prices + supplier messages.
+/catalogue/*
+!/catalogue/CATALOGUE.md
