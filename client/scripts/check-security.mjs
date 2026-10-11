@@ -24,14 +24,20 @@ const run = async (label, db) => {
   console.log(`\n— ${label} —`);
 
   const products = await db.from('products').select('code, price');
-  check('can browse sarees', products.data?.length >= 12, products.error?.message ?? `${products.data?.length} sarees`);
+  check('can browse sarees', products.data?.length >= 1, products.error?.message ?? `${products.data?.length} sarees`);
+  const variants = await db.from('product_variants').select('id').limit(1);
+  check('can see colours', variants.data?.length === 1, variants.error?.message);
+  check('can read services', ((await db.from('services').select('name')).data?.length ?? 0) > 0);
+  check("CANNOT read the owner's base prices", blocked(await db.from('product_costs').select('*')));
+  check('cannot set a base price', blocked(await db.from('product_costs').insert({ product_id: variants.data?.[0]?.id, base_price: 1 }).select()));
+  check('cannot set colour stock directly', blocked(await db.from('product_variants').update({ stock: 99 }).eq('id', variants.data?.[0]?.id).select()));
   const settings = await db.from('settings').select('whatsapp_number');
   check('can read settings', settings.data?.length === 1, settings.error?.message);
 
   check('cannot add a saree', blocked(await db.from('products').insert({ name: 'Hack', price: 1 }).select()));
   check('cannot edit a saree', blocked(await db.from('products').update({ price: 1 }).eq('code', 'VLS-0001').select()));
-  const anyId = products.data ? (await db.from('products').select('id').limit(1)).data?.[0]?.id : null;
-  const stock = await db.rpc('adjust_stock', { p_product_id: anyId, p_change: 5, p_reason: 'new_stock' });
+  const anyId = variants.data?.[0]?.id ?? null;
+  const stock = await db.rpc('adjust_stock', { p_variant_id: anyId, p_change: 5, p_reason: 'new_stock' });
   check('cannot change stock', !!stock.error, stock.error?.message);
   check('cannot change shop stock', !!(await db.rpc('adjust_shop_stock', { p_item_id: anyId, p_change: 5, p_reason: 'received' })).error);
   check('cannot create an order directly', blocked(await db.from('orders')

@@ -44,3 +44,7 @@ Thumbs.db
 # products.json holds the owner's private base prices + supplier messages.
 /catalogue/*
 !/catalogue/CATALOGUE.md
+
+# Admin scripts: the service_role key must never reach Git
+/scripts/.env
+/scripts/node_modules

@@ -1,0 +1,12 @@
+{
+  "name": "vls-scripts",
+  "private": true,
+  "type": "module",
+  "description": "Admin-only scripts (run on the lead's laptop). Never deployed.",
+  "scripts": {
+    "seed": "node --env-file=.env seed-catalogue.mjs"
+  },
+  "dependencies": {
+    "@supabase/supabase-js": "^2.117.3"
+  }
+}
