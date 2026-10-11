@@ -55,6 +55,7 @@ const run = async (label, db) => {
 // 1. Visitor (not logged in)
 const visitor = createClient(url, key, { auth: { persistSession: false } });
 await run('Visitor (not logged in)', visitor);
+check('visitor: is_admin() says no', (await visitor.rpc('is_admin')).data === false);
 for (const t of ['orders', 'profiles', 'addresses']) {
   check(`cannot read ${t}`, blocked(await visitor.from(t).select('*')));
 }
@@ -75,6 +76,10 @@ if (email && password) {
     check('sees only own profile', profiles.data?.length === 1 && profiles.data[0].id === me, profiles.error?.message);
     const { data: prof } = await customer.from('profiles').select('role').eq('id', me).single();
     check('is still a customer', prof?.role === 'customer', prof?.role);
+    const adminCheck = await customer.rpc('is_admin');
+    check('is_admin() says no (admin pages stay locked)', adminCheck.data === false, adminCheck.error?.message);
+    const nameChange = await customer.from('profiles').update({ full_name: 'Test Customer' }).eq('id', me).select();
+    check('can edit own name', nameChange.data?.length === 1, nameChange.error?.message);
   }
 } else {
   console.log('\n(Skipping logged-in customer checks: add TEST_CUSTOMER_EMAIL / TEST_CUSTOMER_PASSWORD to .env.local)');

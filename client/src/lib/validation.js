@@ -1,0 +1,34 @@
+import { z } from 'zod';
+
+// Form rules (project brief §9.5). The database has its own checks too —
+// these just give friendly messages before anything is sent.
+
+const email = z.string().trim().toLowerCase().email('Enter a valid email address');
+const password = z
+  .string()
+  .min(8, 'Password must be at least 8 characters')
+  .regex(/[A-Za-z]/, 'Password must contain a letter')
+  .regex(/[0-9]/, 'Password must contain a number');
+const fullName = z.string().trim().min(2, 'Enter your name').max(100, 'Name is too long');
+const phone = z
+  .string()
+  .trim()
+  .regex(/^[6-9][0-9]{9}$/, 'Enter a 10-digit mobile number')
+  .or(z.literal(''));
+
+export const loginSchema = z.object({ email, password: z.string().min(1, 'Enter your password') });
+export const signUpSchema = z.object({ fullName, email, password });
+export const resetSchema = z.object({ email });
+export const profileSchema = z.object({ full_name: fullName, phone });
+
+// Returns { data } when valid, or { errors: { field: 'message' } }
+export function check(schema, values) {
+  const result = schema.safeParse(values);
+  if (result.success) return { data: result.data };
+  const errors = {};
+  for (const issue of result.error.issues) {
+    const field = issue.path[0];
+    if (!errors[field]) errors[field] = issue.message;
+  }
+  return { errors };
+}

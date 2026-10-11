@@ -2,11 +2,14 @@ import React, { useState, useEffect } from 'react';
 import { Link, NavLink, useNavigate } from 'react-router-dom';
 import { useCart } from '../context/CartContext';
 import { useWishlist } from '../context/WishlistContext';
+import { useAuth } from '../context/AuthContext';
 import logoIcon from '../assets/brand/icon.svg';
 
 const Header = () => {
   const { cartCount } = useCart();
   const { wishlist } = useWishlist();
+  const { user } = useAuth();
+  const accountLink = user ? '/account' : '/login';
   const [scrolled, setScrolled] = useState(false);
   const [searchOpen, setSearchOpen] = useState(false);
   const [searchQuery, setSearchQuery] = useState('');
@@ -128,10 +131,19 @@ const Header = () => {
               )}
             </Link>
 
-            {/* User */}
-            <button className="p-2 hover:text-maroon-900 transition-colors hidden md:block">
-              <span className="material-symbols-outlined text-xl text-charcoal">person</span>
-            </button>
+            {/* Account: log in, or My Account when logged in */}
+            <Link
+              to={accountLink}
+              aria-label={user ? 'My account' : 'Log in'}
+              className="p-2 hover:text-maroon-900 transition-colors hidden md:block"
+            >
+              <span
+                className={`material-symbols-outlined text-xl ${user ? 'text-maroon-900' : 'text-charcoal'}`}
+                style={{ fontVariationSettings: user ? "'FILL' 1" : "'FILL' 0" }}
+              >
+                person
+              </span>
+            </Link>
 
             {/* Mobile menu toggle */}
             <button
@@ -162,6 +174,14 @@ const Header = () => {
                 {label}
               </NavLink>
             ))}
+            <Link
+              to={accountLink}
+              onClick={() => setMenuOpen(false)}
+              className="flex items-center gap-2 px-4 py-2.5 font-body font-medium text-sm text-charcoal hover:text-maroon-900"
+            >
+              <span className="material-symbols-outlined text-base">person</span>
+              {user ? 'My Account' : 'Log in / Sign up'}
+            </Link>
             {/* Mobile search */}
             <form onSubmit={handleSearch} className="flex items-center px-4 mt-2">
               <input
