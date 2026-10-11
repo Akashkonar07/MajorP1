@@ -17,6 +17,9 @@ import AdminRoute from './components/admin/AdminRoute';
 import AdminLayout from './components/admin/AdminLayout';
 import AdminLogin from './pages/admin/AdminLogin';
 import Dashboard from './pages/admin/Dashboard';
+import Sarees from './pages/admin/Sarees';
+import SareeForm from './pages/admin/SareeForm';
+import StockRegister from './pages/admin/StockRegister';
 
 // Customer pages share the shop header and footer
 const ShopLayout = () => (
@@ -40,6 +43,10 @@ function App() {
               <Route path="/admin/login" element={<AdminLogin />} />
               <Route path="/admin" element={<AdminRoute><AdminLayout /></AdminRoute>}>
                 <Route index element={<Dashboard />} />
+                <Route path="sarees" element={<Sarees />} />
+                <Route path="sarees/new" element={<SareeForm key="new" />} />
+                <Route path="sarees/:id" element={<SareeForm />} />
+                <Route path="stock-register" element={<StockRegister />} />
               </Route>
 
               {/* Shop */}

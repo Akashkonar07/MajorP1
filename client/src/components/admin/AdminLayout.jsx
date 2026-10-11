@@ -9,9 +9,9 @@ const NAV = [
     title: 'Online Store',
     items: [
       { label: 'Dashboard', icon: 'dashboard', to: '/admin', end: true },
-      { label: 'Sarees', icon: 'checkroom', to: null },
+      { label: 'Sarees', icon: 'checkroom', to: '/admin/sarees' },
       { label: 'Orders', icon: 'receipt_long', to: null },
-      { label: 'Online Stock Register', icon: 'inventory', to: null },
+      { label: 'Online Stock Register', icon: 'inventory', to: '/admin/stock-register' },
       { label: 'Customers', icon: 'group', to: null },
       { label: 'Categories', icon: 'category', to: null },
     ],
