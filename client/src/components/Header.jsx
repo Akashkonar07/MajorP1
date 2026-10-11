@@ -8,7 +8,7 @@ import logoIcon from '../assets/brand/icon.svg';
 const Header = () => {
   const { cartCount } = useCart();
   const { wishlist } = useWishlist();
-  const { user } = useAuth();
+  const { user, isAdmin } = useAuth();
   const accountLink = user ? '/account' : '/login';
   const [scrolled, setScrolled] = useState(false);
   const [searchOpen, setSearchOpen] = useState(false);
@@ -130,6 +130,17 @@ const Header = () => {
                 </span>
               )}
             </Link>
+
+            {/* Admin shortcut — only shown to logged-in admins */}
+            {isAdmin && (
+              <Link
+                to="/admin"
+                className="flex items-center gap-1 px-2.5 py-1 rounded-sm bg-gold-700 text-white font-body text-xs font-semibold hover:bg-gold-800 transition-colors"
+              >
+                <span className="material-symbols-outlined text-sm">admin_panel_settings</span>
+                <span className="hidden sm:inline">Admin</span>
+              </Link>
+            )}
 
             {/* Account: log in, or My Account when logged in */}
             <Link

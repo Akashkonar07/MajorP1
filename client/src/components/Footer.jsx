@@ -108,6 +108,9 @@ const Footer = () => {
           <p className="font-body text-xs text-gray-400">
             © {CURRENT_YEAR} {SHOP.name}, Kamothe, Navi Mumbai. All rights reserved.
           </p>
+          <Link to="/admin/login" className="inline-block mt-2 font-body text-[11px] text-gray-400 hover:text-maroon-900">
+            Staff login
+          </Link>
         </div>
       </div>
     </footer>
