@@ -59,6 +59,9 @@ check('visitor: is_admin() says no', (await visitor.rpc('is_admin')).data === fa
 for (const t of ['orders', 'profiles', 'addresses']) {
   check(`cannot read ${t}`, blocked(await visitor.from(t).select('*')));
 }
+const quote = await visitor.rpc('delivery_quote', { p_pincode: '410209', p_sarees: 2 });
+check('delivery charge comes from the database (Kamothe, 2 sarees = ₹90)', Number(quote.data?.charge) === 90, quote.error?.message ?? JSON.stringify(quote.data));
+check('visitor cannot place an order', !!(await visitor.rpc('place_order', { p_items: [], p_address: {} })).error);
 
 // 2. Logged-in customer (optional: needs a TEST customer account in .env.local)
 const email = process.env.TEST_CUSTOMER_EMAIL;
@@ -70,6 +73,7 @@ if (email && password) {
     check('test customer can log in', false, error.message);
   } else {
     await run('Customer (logged in)', customer);
+    const anyVariant = (await customer.from('product_variants').select('id').limit(1)).data?.[0]?.id;
     const me = login.user.id;
     check('cannot make self admin', blocked(await customer.from('profiles').update({ role: 'admin' }).eq('id', me).select()));
     const profiles = await customer.from('profiles').select('id');
@@ -80,6 +84,23 @@ if (email && password) {
     check('is_admin() says no (admin pages stay locked)', adminCheck.data === false, adminCheck.error?.message);
     const nameChange = await customer.from('profiles').update({ full_name: 'Test Customer' }).eq('id', me).select();
     check('can edit own name', nameChange.data?.length === 1, nameChange.error?.message);
+
+    // Orders (step 6) — only failing calls here, so no real order is created
+    const fakeId = '00000000-0000-0000-0000-000000000000';
+    const badOrder = await customer.rpc('place_order', {
+      p_items: [{ variant_id: anyVariant, qty: 1 }],
+      p_address: { full_name: 'Test', phone: '123', line1: 'x', city: 'x', state: 'x', pincode: '1' },
+    });
+    check('place_order checks the address on the server', /mobile/.test(badOrder.error?.message ?? ''), badOrder.error?.message);
+    const tooMany = await customer.rpc('place_order', {
+      p_items: [{ variant_id: anyVariant, qty: 50 }],
+      p_address: { full_name: 'Test Customer', phone: '9876543210', line1: 'Flat 1', city: 'Kamothe', state: 'Maharashtra', pincode: '410209' },
+    });
+    check('place_order rejects quantity 50', !!tooMany.error, tooMany.error?.message);
+    check('cannot mark an order as paid', blocked(await customer.from('orders').update({ payment_status: 'verified' }).neq('id', fakeId).select()));
+    check('cannot call the internal stock-restore function', !!(await customer.rpc('restore_order_stock', { p_order_id: fakeId, p_note: 'x' })).error);
+    check("cannot submit a UTR for someone else's order", !!(await customer.rpc('submit_utr', { p_order_id: fakeId, p_utr: '123456789012' })).error);
+    check("cannot cancel someone else's order", !!(await customer.rpc('cancel_my_order', { p_order_id: fakeId })).error);
   }
 } else {
   console.log('\n(Skipping logged-in customer checks: add TEST_CUSTOMER_EMAIL / TEST_CUSTOMER_PASSWORD to .env.local)');

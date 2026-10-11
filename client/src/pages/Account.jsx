@@ -1,8 +1,11 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Link, Navigate, useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import FormField from '../components/FormField';
+import OrderStatusBadge from '../components/OrderStatusBadge';
 import { check, profileSchema } from '../lib/validation';
+import { formatPrice } from '../lib/catalogue';
+import { deleteAddress, fetchMyAddresses, fetchMyOrders } from '../lib/orders';
 
 const ProfileForm = ({ profile, updateProfile }) => {
   const [values, setValues] = useState({ full_name: profile?.full_name ?? '', phone: profile?.phone ?? '' });
@@ -34,6 +37,68 @@ const ProfileForm = ({ profile, updateProfile }) => {
         {status === 'error' && <span className="font-body text-xs text-red-600">Could not save. Please try again.</span>}
       </div>
     </form>
+  );
+};
+
+const MyOrders = () => {
+  const [orders, setOrders] = useState(null);
+  useEffect(() => { fetchMyOrders().then(setOrders).catch(() => setOrders([])); }, []);
+
+  if (orders === null) return <div className="h-20 bg-gray-50 rounded animate-pulse" />;
+  if (orders.length === 0) {
+    return (
+      <>
+        <p className="font-body text-sm text-gray-500 mb-4">You have not placed any orders yet.</p>
+        <Link to="/collection" className="font-body text-sm text-maroon-900 hover:underline">Browse sarees →</Link>
+      </>
+    );
+  }
+  return (
+    <div className="divide-y divide-gray-100">
+      {orders.map(o => (
+        <Link key={o.id} to={`/order/${o.order_no}`} className="flex items-center gap-3 py-3 hover:bg-maroon-50/40 -mx-2 px-2 rounded">
+          <div className="flex-1 min-w-0 font-body">
+            <p className="text-sm font-semibold text-charcoal">{o.order_no}</p>
+            <p className="text-xs text-gray-500">
+              {new Date(o.created_at).toLocaleDateString('en-IN', { day: 'numeric', month: 'short', year: 'numeric' })}
+              {' · '}{o.count} saree{o.count !== 1 ? 's' : ''} · {formatPrice(o.total)}
+            </p>
+          </div>
+          <OrderStatusBadge order={o} />
+          <span className="material-symbols-outlined text-gray-400 text-base">chevron_right</span>
+        </Link>
+      ))}
+    </div>
+  );
+};
+
+const SavedAddresses = () => {
+  const [list, setList] = useState(null);
+  const load = () => fetchMyAddresses().then(setList).catch(() => setList([]));
+  useEffect(() => { load(); }, []);
+
+  const remove = async id => {
+    if (!window.confirm('Delete this address?')) return;
+    await deleteAddress(id).catch(() => {});
+    load();
+  };
+
+  if (list === null) return <div className="h-16 bg-gray-50 rounded animate-pulse" />;
+  if (list.length === 0) return <p className="font-body text-sm text-gray-500">Addresses you use at checkout will be saved here.</p>;
+  return (
+    <div className="space-y-2">
+      {list.map(a => (
+        <div key={a.id} className="flex gap-3 p-3 border border-gray-100 rounded-sm font-body text-sm">
+          <div className="flex-1 min-w-0">
+            <p className="font-semibold text-charcoal">{a.full_name} · {a.phone}</p>
+            <p className="text-gray-600">{[a.line1, a.line2, `${a.city}, ${a.state} – ${a.pincode}`].filter(Boolean).join(', ')}</p>
+          </div>
+          <button onClick={() => remove(a.id)} className="text-gray-400 hover:text-red-600 self-start" aria-label="Delete address">
+            <span className="material-symbols-outlined text-lg">delete</span>
+          </button>
+        </div>
+      ))}
+    </div>
   );
 };
 
@@ -83,14 +148,13 @@ const Account = () => {
         </section>
 
         <section className="bg-white rounded-lg shadow-soft p-6 border border-gray-50">
-          <h2 className="font-heading text-2xl font-semibold text-charcoal mb-2">My Orders</h2>
-          <p className="font-body text-sm text-gray-500 mb-4">Your orders and their status will appear here.</p>
-          <Link to="/collection" className="font-body text-sm text-maroon-900 hover:underline">Browse sarees →</Link>
+          <h2 className="font-heading text-2xl font-semibold text-charcoal mb-3">My Orders</h2>
+          <MyOrders />
         </section>
 
         <section className="bg-white rounded-lg shadow-soft p-6 border border-gray-50">
-          <h2 className="font-heading text-2xl font-semibold text-charcoal mb-2">Saved Addresses</h2>
-          <p className="font-body text-sm text-gray-500">Addresses you use at checkout will be saved here.</p>
+          <h2 className="font-heading text-2xl font-semibold text-charcoal mb-3">Saved Addresses</h2>
+          <SavedAddresses />
         </section>
       </div>
     </main>

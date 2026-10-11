@@ -21,6 +21,20 @@ export const signUpSchema = z.object({ fullName, email, password });
 export const resetSchema = z.object({ email });
 export const profileSchema = z.object({ full_name: fullName, phone });
 
+// Delivery address — same rules as the addresses table and place_order()
+export const addressSchema = z.object({
+  full_name: fullName,
+  phone: z.string().trim().regex(/^[6-9][0-9]{9}$/, 'Enter a 10-digit mobile number'),
+  line1: z.string().trim().min(3, 'Enter house / flat no. and street').max(200, 'Too long'),
+  line2: z.string().trim().max(200, 'Too long'),
+  city: z.string().trim().min(2, 'Enter the city').max(60, 'Too long'),
+  state: z.string().trim().min(2, 'Choose the state'),
+  pincode: z.string().trim().regex(/^[1-9][0-9]{5}$/, 'Enter a 6-digit pincode'),
+});
+export const utrSchema = z.object({
+  utr: z.string().transform(s => s.replace(/\s/g, '')).pipe(z.string().regex(/^[0-9]{12}$/, 'The UTR / UPI reference number has 12 digits')),
+});
+
 // Returns { data } when valid, or { errors: { field: 'message' } }
 export function check(schema, values) {
   const result = schema.safeParse(values);

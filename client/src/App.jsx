@@ -13,6 +13,8 @@ import Wishlist from './pages/Wishlist';
 import StoreLocator from './pages/StoreLocator';
 import Login from './pages/Login';
 import Account from './pages/Account';
+import Checkout from './pages/Checkout';
+import OrderDetail from './pages/OrderDetail';
 import AdminRoute from './components/admin/AdminRoute';
 import AdminLayout from './components/admin/AdminLayout';
 import AdminLogin from './pages/admin/AdminLogin';
@@ -56,6 +58,8 @@ function App() {
                 <Route path="/category/:slug" element={<Collection />} />
                 <Route path="/product/:slug" element={<ProductDetail />} />
                 <Route path="/cart" element={<Cart />} />
+                <Route path="/checkout" element={<Checkout />} />
+                <Route path="/order/:orderNo" element={<OrderDetail />} />
                 <Route path="/wishlist" element={<Wishlist />} />
                 <Route path="/store-locator" element={<StoreLocator />} />
                 <Route path="/login" element={<Login />} />

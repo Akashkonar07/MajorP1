@@ -1,12 +1,13 @@
 import React from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { useCart } from '../context/CartContext';
 import { SHOP } from '../config/shop';
 import { AVAILABILITY_NOTE } from '../lib/catalogue';
 
 const Cart = () => {
   const { cart, removeFromCart, updateQty, cartTotal } = useCart();
-  // Delivery charge and final total are calculated on the server at checkout (build step 6)
+  const navigate = useNavigate();
+  // Delivery charge and final total are calculated on the server at checkout
 
   if (cart.length === 0) {
     return (
@@ -62,7 +63,8 @@ const Cart = () => {
                     <span className="w-10 text-center font-body text-sm font-medium">{item.qty}</span>
                     <button
                       onClick={() => updateQty(item.id, item.qty + 1)}
-                      className="w-8 h-8 flex items-center justify-center hover:bg-gray-50 font-body text-base transition-colors"
+                      disabled={item.qty >= 10}
+                      className="w-8 h-8 flex items-center justify-center hover:bg-gray-50 font-body text-base transition-colors disabled:opacity-30"
                     >
                       +
                     </button>
@@ -127,7 +129,7 @@ const Cart = () => {
             </div>
 
             {/* Checkout CTA */}
-            <button className="btn-gold w-full flex items-center justify-center gap-2 py-4">
+            <button onClick={() => navigate('/checkout')} className="btn-gold w-full flex items-center justify-center gap-2 py-4">
               <span className="material-symbols-outlined text-base">lock</span>
               Proceed to Secure Checkout
             </button>
