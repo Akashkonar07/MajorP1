@@ -2,6 +2,7 @@ import React from 'react';
 import { Link } from 'react-router-dom';
 import { useCart } from '../context/CartContext';
 import { SHOP } from '../config/shop';
+import { AVAILABILITY_NOTE } from '../lib/catalogue';
 
 const Cart = () => {
   const { cart, removeFromCart, updateQty, cartTotal } = useCart();
@@ -36,24 +37,18 @@ const Cart = () => {
         <div className="flex-1 space-y-4">
           {cart.map((item) => (
             <div key={item.id} className="bg-white rounded-lg shadow-soft p-5 flex gap-5 border border-gray-50">
-              {/* Image */}
-              <div
-                className="w-24 h-28 rounded shrink-0 flex items-center justify-center"
-                style={{ backgroundColor: `${item.colorCode}22` }}
-              >
-                <div className="w-10 h-10 rounded-full" style={{ backgroundColor: item.colorCode }} />
-              </div>
+              {/* Photo */}
+              <Link to={`/product/${item.slug}?colour=${encodeURIComponent(item.colorName ?? '')}`} className="w-24 h-28 rounded shrink-0 overflow-hidden bg-maroon-50">
+                {item.image && <img src={item.image} alt={item.name} className="w-full h-full object-cover" />}
+              </Link>
 
               {/* Info */}
               <div className="flex-1 min-w-0">
                 <h3 className="font-heading font-semibold text-base text-charcoal leading-tight mb-1">{item.name}</h3>
-                <p className="font-body text-xs text-gray-500 mb-2">{item.fabric}{item.color ? ` • ${item.color}` : ''}</p>
-                {item.blouseDetail && (
-                  <div className="flex items-center gap-1.5 text-xs font-body text-emerald-700 bg-emerald-50 inline-flex px-2 py-1 rounded-full mb-3">
-                    <span className="material-symbols-outlined text-xs" style={{ fontVariationSettings: "'FILL' 1" }}>check_circle</span>
-                    {item.blouseDetail}
-                  </div>
-                )}
+                <p className="font-body text-xs text-gray-500 mb-2 flex items-center gap-1.5">
+                  {item.colorHex && <span className="w-3 h-3 rounded-full border border-gray-200" style={{ backgroundColor: item.colorHex }} />}
+                  Colour: {item.colorName}
+                </p>
 
                 <div className="flex items-center justify-between mt-2 flex-wrap gap-3">
                   {/* Quantity */}
@@ -92,6 +87,11 @@ const Cart = () => {
               </div>
             </div>
           ))}
+
+          <p className="flex items-start gap-2 font-body text-xs text-gray-500">
+            <span className="material-symbols-outlined text-sm text-gold-700">info</span>
+            {AVAILABILITY_NOTE}
+          </p>
 
           {/* Note */}
           <div className="bg-amber-50 border border-amber-200 rounded-lg p-4 flex gap-3 items-start">

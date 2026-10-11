@@ -1,57 +1,89 @@
-import React, { useState, useEffect } from 'react';
-import { Link, useSearchParams } from 'react-router-dom';
-import axios from 'axios';
+import React, { useState, useEffect, useMemo } from 'react';
+import { Link, useParams, useSearchParams } from 'react-router-dom';
 import ProductCard from '../components/ProductCard';
-import FilterSidebar, { MAX_PRICE } from '../components/FilterSidebar';
+import FilterSidebar from '../components/FilterSidebar';
+import { fetchCatalogue, fetchCategories, productColourFamilies, productFabricFamilies } from '../lib/catalogue';
 
 const SORT_OPTIONS = [
   { value: 'newest', label: 'Newest First' },
   { value: 'price-asc', label: 'Price: Low to High' },
   { value: 'price-desc', label: 'Price: High to Low' },
-  { value: 'discount', label: 'Best Discount' },
+  { value: 'name', label: 'Name: A to Z' },
 ];
+const PER_PAGE = 24;
+const EMPTY_FILTERS = { category: [], occasion: [], fabric: [], colour: [], maxPrice: null };
 
 const Collection = () => {
-  const [searchParams] = useSearchParams();
+  const { slug } = useParams();                 // set on /category/:slug
+  const [searchParams, setSearchParams] = useSearchParams();
+  const search = (searchParams.get('search') || '').trim();
+
   const [products, setProducts] = useState([]);
-  const [total, setTotal] = useState(0);
-  const [totalPages, setTotalPages] = useState(1);
-  const [page, setPage] = useState(1);
-  const [sort, setSort] = useState('newest');
+  const [categories, setCategories] = useState([]);
   const [loading, setLoading] = useState(true);
-  const [filters, setFilters] = useState({ occasion: [], fabric: [], color: [], minPrice: 0, maxPrice: MAX_PRICE });
+  const [loadError, setLoadError] = useState('');
+  const [filters, setFilters] = useState(EMPTY_FILTERS);
+  const [sort, setSort] = useState('newest');
+  const [page, setPage] = useState(1);
   const [filterOpen, setFilterOpen] = useState(false);
 
   useEffect(() => {
-    const fabric = searchParams.get('fabric');
-    const search = searchParams.get('search');
-    if (fabric) setFilters(prev => ({ ...prev, fabric: [fabric] }));
-    if (search) setFilters(prev => ({ ...prev, search }));
-  }, [searchParams]);
-
-  useEffect(() => {
-    setLoading(true);
-    const params = new URLSearchParams();
-    params.set('page', page);
-    params.set('limit', 12);
-    params.set('sort', sort);
-    if (filters.occasion?.length) params.set('occasion', filters.occasion.join(','));
-    if (filters.fabric?.length) params.set('fabric', filters.fabric.join(','));
-    if (filters.color?.length) params.set('color', filters.color.join(','));
-    if (filters.minPrice) params.set('minPrice', filters.minPrice);
-    if (filters.maxPrice && filters.maxPrice < MAX_PRICE) params.set('maxPrice', filters.maxPrice);
-
-    axios.get(`http://localhost:5000/api/products?${params.toString()}`)
-      .then(res => {
-        setProducts(res.data.products || []);
-        setTotal(res.data.total || 0);
-        setTotalPages(res.data.totalPages || 1);
-      })
-      .catch(() => setProducts([]))
+    Promise.all([fetchCatalogue(), fetchCategories()])
+      .then(([items, cats]) => { setProducts(items); setCategories(cats); })
+      .catch(() => setLoadError('Could not load the sarees. Please check your internet and refresh.'))
       .finally(() => setLoading(false));
-  }, [page, sort, filters]);
+  }, []);
 
-  const clearFilters = () => setFilters({ occasion: [], fabric: [], color: [], minPrice: 0, maxPrice: MAX_PRICE });
+  const currentCategory = categories.find(c => c.slug === slug);
+  const priceBounds = useMemo(() => {
+    if (!products.length) return [0, 0];
+    const prices = products.map(p => p.price);
+    return [Math.min(...prices), Math.max(...prices)];
+  }, [products]);
+
+  const visible = useMemo(() => {
+    const categoryFilter = slug ? [slug] : filters.category;
+    const q = search.toLowerCase();
+    const list = products.filter(p => {
+      if (categoryFilter.length && !categoryFilter.includes(p.category?.slug)) return false;
+      if (filters.occasion.length && !filters.occasion.some(o => p.occasions?.includes(o))) return false;
+      if (filters.fabric.length && !productFabricFamilies(p).some(f => filters.fabric.includes(f))) return false;
+      if (filters.colour.length && !productColourFamilies(p).some(c => filters.colour.includes(c))) return false;
+      if (filters.maxPrice !== null && p.price > filters.maxPrice) return false;
+      if (q) {
+        const text = [p.name, p.fabric, p.code, p.category?.name, ...p.variants.map(v => v.color_name)]
+          .join(' ').toLowerCase();
+        if (!text.includes(q)) return false;
+      }
+      return true;
+    });
+    if (sort === 'price-asc') list.sort((a, b) => a.price - b.price);
+    else if (sort === 'price-desc') list.sort((a, b) => b.price - a.price);
+    else if (sort === 'name') list.sort((a, b) => a.name.localeCompare(b.name));
+    return list;                                 // 'newest' = order from the database (newest code first)
+  }, [products, filters, sort, search, slug]);
+
+  const totalPages = Math.max(1, Math.ceil(visible.length / PER_PAGE));
+  const currentPage = Math.min(page, totalPages);
+  const pageItems = visible.slice((currentPage - 1) * PER_PAGE, currentPage * PER_PAGE);
+
+  const changeFilters = (f) => { setFilters(f); setPage(1); };
+  const clearFilters = () => {
+    changeFilters(EMPTY_FILTERS);
+    if (search) setSearchParams({});
+  };
+
+  const title = currentCategory?.name ?? (search ? `Search: “${search}”` : 'All Sarees');
+  const sidebar = (
+    <FilterSidebar
+      filters={filters}
+      onFilterChange={changeFilters}
+      onClear={clearFilters}
+      categories={categories}
+      priceBounds={priceBounds}
+      hideCategory={!!slug}
+    />
+  );
 
   return (
     <main className="max-w-7xl mx-auto px-4 sm:px-6 py-8">
@@ -59,15 +91,23 @@ const Collection = () => {
       <nav className="flex items-center gap-1.5 text-xs font-body text-gray-400 mb-6">
         <Link to="/" className="hover:text-maroon-900 transition-colors">Home</Link>
         <span className="material-symbols-outlined text-sm">chevron_right</span>
-        <span className="text-charcoal font-medium">Collection</span>
+        {slug ? (
+          <>
+            <Link to="/collection" className="hover:text-maroon-900 transition-colors">Collection</Link>
+            <span className="material-symbols-outlined text-sm">chevron_right</span>
+            <span className="text-charcoal font-medium">{currentCategory?.name ?? '…'}</span>
+          </>
+        ) : (
+          <span className="text-charcoal font-medium">Collection</span>
+        )}
       </nav>
 
       {/* Header row */}
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-8">
         <div>
-          <h1 className="font-heading text-4xl font-semibold text-charcoal">Our Collection</h1>
+          <h1 className="font-heading text-4xl font-semibold text-charcoal">{title}</h1>
           <p className="font-body text-sm text-gray-500 mt-1">
-            {loading ? 'Loading...' : `${total} sarees found`}
+            {loading ? 'Loading...' : `${visible.length} saree${visible.length === 1 ? '' : 's'} found`}
           </p>
         </div>
         <div className="flex items-center gap-3">
@@ -95,17 +135,9 @@ const Collection = () => {
         </div>
       </div>
 
-      {/* Placeholder notice — remove once real products are added */}
-      <div className="flex items-start gap-2 bg-gold-700/10 border border-gold-700/20 rounded-sm px-4 py-3 mb-6 font-body text-xs text-charcoal">
-        <span className="material-symbols-outlined text-base text-gold-700">info</span>
-        <span>These are sample sarees for demonstration. Our real collection and photos are coming soon.</span>
-      </div>
-
       <div className="flex gap-7">
         {/* Sidebar - desktop */}
-        <div className="hidden md:block w-64 shrink-0">
-          <FilterSidebar filters={filters} onFilterChange={(f) => { setFilters(f); setPage(1); }} onClear={clearFilters} />
-        </div>
+        <div className="hidden md:block w-64 shrink-0">{sidebar}</div>
 
         {/* Mobile filter overlay */}
         {filterOpen && (
@@ -114,11 +146,14 @@ const Collection = () => {
             <div className="absolute left-0 top-0 h-full w-72 bg-white overflow-y-auto p-5">
               <div className="flex justify-between items-center mb-4">
                 <h3 className="font-heading text-xl font-semibold">Filters</h3>
-                <button onClick={() => setFilterOpen(false)}>
+                <button onClick={() => setFilterOpen(false)} aria-label="Close filters">
                   <span className="material-symbols-outlined">close</span>
                 </button>
               </div>
-              <FilterSidebar filters={filters} onFilterChange={(f) => { setFilters(f); setPage(1); }} onClear={clearFilters} />
+              {sidebar}
+              <button onClick={() => setFilterOpen(false)} className="btn-primary w-full mt-4">
+                Show {visible.length} sarees
+              </button>
             </div>
           </div>
         )}
@@ -131,7 +166,13 @@ const Collection = () => {
                 <div key={i} className="bg-gray-100 rounded-lg aspect-[3/4] animate-pulse" />
               ))}
             </div>
-          ) : products.length === 0 ? (
+          ) : loadError ? (
+            <div className="text-center py-20">
+              <span className="material-symbols-outlined text-5xl text-gray-300 mb-4 block">wifi_off</span>
+              <p className="font-body text-sm text-gray-500 mb-4">{loadError}</p>
+              <button onClick={() => window.location.reload()} className="btn-primary">Try Again</button>
+            </div>
+          ) : visible.length === 0 ? (
             <div className="text-center py-20">
               <span className="material-symbols-outlined text-5xl text-gray-300 mb-4 block">search_off</span>
               <h3 className="font-heading text-2xl text-gray-400 mb-2">No sarees found</h3>
@@ -140,8 +181,8 @@ const Collection = () => {
             </div>
           ) : (
             <>
-              <div className="grid grid-cols-2 lg:grid-cols-3 gap-5">
-                {products.map(product => (
+              <div className="grid grid-cols-2 lg:grid-cols-3 gap-3 sm:gap-5">
+                {pageItems.map(product => (
                   <ProductCard key={product.id} product={product} />
                 ))}
               </div>
@@ -150,8 +191,9 @@ const Collection = () => {
               {totalPages > 1 && (
                 <div className="flex justify-center items-center gap-2 mt-10">
                   <button
-                    disabled={page === 1}
-                    onClick={() => setPage(p => p - 1)}
+                    disabled={currentPage === 1}
+                    onClick={() => { setPage(currentPage - 1); window.scrollTo(0, 0); }}
+                    aria-label="Previous page"
                     className="w-9 h-9 rounded-full border border-gray-200 flex items-center justify-center hover:border-maroon-900 hover:text-maroon-900 disabled:opacity-30 transition-colors"
                   >
                     <span className="material-symbols-outlined text-base">chevron_left</span>
@@ -159,9 +201,9 @@ const Collection = () => {
                   {Array.from({ length: totalPages }, (_, i) => i + 1).map(p => (
                     <button
                       key={p}
-                      onClick={() => setPage(p)}
+                      onClick={() => { setPage(p); window.scrollTo(0, 0); }}
                       className={`w-9 h-9 rounded-full font-body text-sm font-medium transition-all ${
-                        page === p
+                        currentPage === p
                           ? 'bg-maroon-900 text-white'
                           : 'border border-gray-200 text-charcoal hover:border-maroon-900 hover:text-maroon-900'
                       }`}
@@ -170,8 +212,9 @@ const Collection = () => {
                     </button>
                   ))}
                   <button
-                    disabled={page === totalPages}
-                    onClick={() => setPage(p => p + 1)}
+                    disabled={currentPage === totalPages}
+                    onClick={() => { setPage(currentPage + 1); window.scrollTo(0, 0); }}
+                    aria-label="Next page"
                     className="w-9 h-9 rounded-full border border-gray-200 flex items-center justify-center hover:border-maroon-900 hover:text-maroon-900 disabled:opacity-30 transition-colors"
                   >
                     <span className="material-symbols-outlined text-base">chevron_right</span>

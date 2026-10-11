@@ -37,10 +37,11 @@ const Footer = () => {
             <h4 className="font-body font-semibold text-charcoal text-sm tracking-widest uppercase mb-5">Quick Links</h4>
             <ul className="space-y-2.5">
               {[
-                { label: 'Cotton Sarees', to: '/collection?fabric=Cotton' },
-                { label: 'Art Silk Sarees', to: '/collection?fabric=Art Silk' },
-                { label: 'Georgette Sarees', to: '/collection?fabric=Georgette' },
-                { label: 'Soft Silk Sarees', to: '/collection?fabric=Soft Silk' },
+                { label: 'All Sarees', to: '/collection' },
+                { label: 'Silk Sarees', to: '/category/silk-sarees' },
+                { label: 'Banarasi Sarees', to: '/category/banarasi-sarees' },
+                { label: 'Georgette Sarees', to: '/category/georgette-sarees' },
+                { label: 'Bandhani Sarees', to: '/category/bandhani-sarees' },
                 { label: 'Store Locator', to: '/store-locator' },
               ].map(({ label, to }) => (
                 <li key={label}>

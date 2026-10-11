@@ -22,7 +22,8 @@ function App() {
               <Routes>
                 <Route path="/" element={<Home />} />
                 <Route path="/collection" element={<Collection />} />
-                <Route path="/product/:id" element={<ProductDetail />} />
+                <Route path="/category/:slug" element={<Collection />} />
+                <Route path="/product/:slug" element={<ProductDetail />} />
                 <Route path="/cart" element={<Cart />} />
                 <Route path="/wishlist" element={<Wishlist />} />
                 <Route path="/store-locator" element={<StoreLocator />} />

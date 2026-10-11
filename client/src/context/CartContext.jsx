@@ -30,7 +30,7 @@ const cartReducer = (state, action) => {
 export const CartProvider = ({ children }) => {
   const [cart, dispatch] = useReducer(cartReducer, [], () => {
     try {
-      const saved = localStorage.getItem('vls_cart');
+      const saved = localStorage.getItem('vls_cart_v2');
       return saved ? JSON.parse(saved) : [];
     } catch {
       return [];
@@ -38,7 +38,7 @@ export const CartProvider = ({ children }) => {
   });
 
   useEffect(() => {
-    localStorage.setItem('vls_cart', JSON.stringify(cart));
+    localStorage.setItem('vls_cart_v2', JSON.stringify(cart));
   }, [cart]);
 
   const addToCart = (product) => dispatch({ type: 'ADD_ITEM', payload: product });

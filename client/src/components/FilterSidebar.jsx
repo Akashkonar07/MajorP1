@@ -1,10 +1,5 @@
 import React, { useState } from 'react';
-
-// Lists match the placeholder sarees in server/data/products.json (real categories to come from the shop)
-const FABRICS = ['Cotton', 'Cotton Silk', 'Art Silk', 'Semi Silk', 'Soft Silk', 'Georgette', 'Chiffon', 'Crepe', 'Linen', 'Organza', 'Tissue', 'Synthetic'];
-const COLORS = ['Red', 'Maroon', 'Pastel Pink', 'Purple', 'Royal Blue', 'Navy Blue', 'Turquoise', 'Mint Green', 'Bottle Green', 'Mustard Yellow', 'Gold', 'Ivory'];
-const OCCASIONS = ['Daily Wear', 'Office Wear', 'Festive', 'Party', 'Wedding'];
-export const MAX_PRICE = 3000;
+import { COLOUR_FAMILIES, FABRIC_FAMILIES, OCCASIONS, formatPrice } from '../lib/catalogue';
 
 const AccordionSection = ({ title, children, defaultOpen = false }) => {
   const [open, setOpen] = useState(defaultOpen);
@@ -40,7 +35,8 @@ const CheckOption = ({ label, checked, onChange }) => (
   </label>
 );
 
-const FilterSidebar = ({ filters, onFilterChange, onClear }) => {
+// filters = { category: [slug], occasion: [], fabric: [], colour: [], maxPrice: number|null }
+const FilterSidebar = ({ filters, onFilterChange, onClear, categories = [], priceBounds = [0, 0], hideCategory = false }) => {
   const toggle = (key, value) => {
     const current = filters[key] || [];
     const updated = current.includes(value)
@@ -48,6 +44,8 @@ const FilterSidebar = ({ filters, onFilterChange, onClear }) => {
       : [...current, value];
     onFilterChange({ ...filters, [key]: updated });
   };
+  const [minPrice, maxPrice] = priceBounds;
+  const currentMax = filters.maxPrice ?? maxPrice;
 
   return (
     <aside className="bg-white rounded shadow-soft p-5 sticky top-24 max-h-[calc(100vh-120px)] overflow-y-auto">
@@ -61,6 +59,19 @@ const FilterSidebar = ({ filters, onFilterChange, onClear }) => {
         </button>
       </div>
 
+      {!hideCategory && (
+        <AccordionSection title="Category" defaultOpen={true}>
+          {categories.map(cat => (
+            <CheckOption
+              key={cat.slug}
+              label={cat.name}
+              checked={(filters.category || []).includes(cat.slug)}
+              onChange={() => toggle('category', cat.slug)}
+            />
+          ))}
+        </AccordionSection>
+      )}
+
       <AccordionSection title="Occasion" defaultOpen={true}>
         {OCCASIONS.map(occ => (
           <CheckOption
@@ -72,52 +83,59 @@ const FilterSidebar = ({ filters, onFilterChange, onClear }) => {
         ))}
       </AccordionSection>
 
-      <AccordionSection title="Fabric" defaultOpen={true}>
-        {FABRICS.map(fab => (
+      <AccordionSection title="Colour" defaultOpen={true}>
+        <div className="flex flex-wrap gap-2">
+          {COLOUR_FAMILIES.map(({ name, hex }) => {
+            const active = (filters.colour || []).includes(name);
+            return (
+              <button
+                key={name}
+                onClick={() => toggle('colour', name)}
+                className={`flex items-center gap-1.5 font-body text-xs px-2.5 py-1 rounded-full border transition-all ${
+                  active
+                    ? 'border-maroon-900 bg-maroon-900 text-white'
+                    : 'border-gray-200 text-gray-600 hover:border-maroon-900 hover:text-maroon-900'
+                }`}
+              >
+                <span className="w-3 h-3 rounded-full border border-gray-200" style={{ backgroundColor: hex }} />
+                {name}
+              </button>
+            );
+          })}
+        </div>
+      </AccordionSection>
+
+      <AccordionSection title="Fabric">
+        {FABRIC_FAMILIES.map(({ name }) => (
           <CheckOption
-            key={fab}
-            label={fab}
-            checked={(filters.fabric || []).includes(fab)}
-            onChange={() => toggle('fabric', fab)}
+            key={name}
+            label={name}
+            checked={(filters.fabric || []).includes(name)}
+            onChange={() => toggle('fabric', name)}
           />
         ))}
       </AccordionSection>
 
-      <AccordionSection title="Colour">
-        <div className="flex flex-wrap gap-2">
-          {COLORS.map(color => (
-            <button
-              key={color}
-              onClick={() => toggle('color', color)}
-              className={`font-body text-xs px-2.5 py-1 rounded-full border transition-all ${
-                (filters.color || []).includes(color)
-                  ? 'border-maroon-900 bg-maroon-900 text-white'
-                  : 'border-gray-200 text-gray-600 hover:border-maroon-900 hover:text-maroon-900'
-              }`}
-            >
-              {color}
-            </button>
-          ))}
-        </div>
-      </AccordionSection>
-
-      <AccordionSection title="Price Range">
-        <div className="space-y-3">
-          <div className="flex justify-between font-body text-xs text-gray-500">
-            <span>₹{(filters.minPrice || 0).toLocaleString('en-IN')}</span>
-            <span>₹{(filters.maxPrice || MAX_PRICE).toLocaleString('en-IN')}</span>
+      {maxPrice > minPrice && (
+        <AccordionSection title="Price" defaultOpen={true}>
+          <div className="space-y-3">
+            <div className="flex justify-between font-body text-xs text-gray-500">
+              <span>{formatPrice(minPrice)}</span>
+              <span>up to {formatPrice(currentMax)}</span>
+            </div>
+            <input
+              type="range"
+              min={minPrice}
+              max={maxPrice}
+              step={50}
+              value={currentMax}
+              onChange={(e) => onFilterChange({ ...filters, maxPrice: Number(e.target.value) })}
+              className="w-full accent-maroon-900"
+              aria-label="Maximum price"
+            />
           </div>
-          <input
-            type="range"
-            min={0}
-            max={MAX_PRICE}
-            step={100}
-            value={filters.maxPrice || MAX_PRICE}
-            onChange={(e) => onFilterChange({ ...filters, maxPrice: Number(e.target.value) })}
-            className="w-full"
-          />
-        </div>
-      </AccordionSection>
+        </AccordionSection>
+      )}
     </aside>
   );
 };

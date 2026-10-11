@@ -5,7 +5,7 @@ const WishlistContext = createContext();
 export const WishlistProvider = ({ children }) => {
   const [wishlist, setWishlist] = useState(() => {
     try {
-      const saved = localStorage.getItem('vls_wishlist');
+      const saved = localStorage.getItem('vls_wishlist_v2');
       return saved ? JSON.parse(saved) : [];
     } catch {
       return [];
@@ -13,14 +13,15 @@ export const WishlistProvider = ({ children }) => {
   });
 
   useEffect(() => {
-    localStorage.setItem('vls_wishlist', JSON.stringify(wishlist));
+    localStorage.setItem('vls_wishlist_v2', JSON.stringify(wishlist));
   }, [wishlist]);
 
   const toggleWishlist = (product) => {
     setWishlist(prev => {
       const exists = prev.find(i => i.id === product.id);
       if (exists) return prev.filter(i => i.id !== product.id);
-      return [...prev, product];
+      // Only the id is stored; the Wishlist page looks up the current name, price and photo
+      return [...prev, { id: product.id }];
     });
   };
 
