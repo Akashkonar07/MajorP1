@@ -101,6 +101,9 @@ if (email && password) {
     check('cannot call the internal stock-restore function', !!(await customer.rpc('restore_order_stock', { p_order_id: fakeId, p_note: 'x' })).error);
     check("cannot submit a UTR for someone else's order", !!(await customer.rpc('submit_utr', { p_order_id: fakeId, p_utr: '123456789012' })).error);
     check("cannot cancel someone else's order", !!(await customer.rpc('cancel_my_order', { p_order_id: fakeId })).error);
+    // Admin order actions (step 7)
+    check('cannot verify a payment', !!(await customer.rpc('admin_set_order_status', { p_order_id: fakeId, p_status: 'payment_verified' })).error);
+    check('cannot reject a payment', !!(await customer.rpc('admin_reject_payment', { p_order_id: fakeId })).error);
   }
 } else {
   console.log('\n(Skipping logged-in customer checks: add TEST_CUSTOMER_EMAIL / TEST_CUSTOMER_PASSWORD to .env.local)');

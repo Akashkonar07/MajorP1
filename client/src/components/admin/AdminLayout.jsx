@@ -10,7 +10,7 @@ const NAV = [
     items: [
       { label: 'Dashboard', icon: 'dashboard', to: '/admin', end: true },
       { label: 'Sarees', icon: 'checkroom', to: '/admin/sarees' },
-      { label: 'Orders', icon: 'receipt_long', to: null },
+      { label: 'Orders', icon: 'receipt_long', to: '/admin/orders' },
       { label: 'Online Stock Register', icon: 'inventory', to: '/admin/stock-register' },
       { label: 'Customers', icon: 'group', to: null },
       { label: 'Categories', icon: 'category', to: null },

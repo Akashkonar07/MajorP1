@@ -56,6 +56,34 @@ const PayBox = ({ order, payment }) => {
   );
 };
 
+// Placed → Paid → Packed → Shipped → Delivered
+const STEPS = [
+  { key: 'payment_pending', label: 'Placed' },
+  { key: 'payment_verified', label: 'Paid' },
+  { key: 'packed', label: 'Packed' },
+  { key: 'shipped', label: 'Shipped' },
+  { key: 'delivered', label: 'Delivered' },
+];
+const Progress = ({ order }) => {
+  const at = STEPS.findIndex(st => st.key === order.status);
+  if (at < 0) return null;   // cancelled / returns are shown by the status badge
+  return (
+    <ol className="flex items-center font-body text-[11px] sm:text-xs">
+      {STEPS.map((st, i) => (
+        <li key={st.key} className={`flex items-center ${i < STEPS.length - 1 ? 'flex-1' : ''}`}>
+          <span className="flex flex-col items-center gap-1">
+            <span className={`w-6 h-6 rounded-full flex items-center justify-center text-[11px] ${i <= at ? 'bg-maroon-900 text-white' : 'bg-gray-200 text-gray-500'}`}>
+              {i < at || (i === at && i > 0) ? '✓' : i + 1}
+            </span>
+            <span className={i <= at ? 'text-charcoal font-medium' : 'text-gray-400'}>{st.label}</span>
+          </span>
+          {i < STEPS.length - 1 && <span className={`flex-1 h-0.5 mx-1 mb-4 ${i < at ? 'bg-maroon-900' : 'bg-gray-200'}`} />}
+        </li>
+      ))}
+    </ol>
+  );
+};
+
 const UtrForm = ({ order, onSaved }) => {
   const [utr, setUtr] = useState(order.upi_utr ?? '');
   const [error, setError] = useState('');
@@ -162,6 +190,8 @@ const OrderDetail = () => {
 
       {error && <p className="font-body text-sm text-red-600">{error}</p>}
 
+      <Progress order={order} />
+
       {/* Payment */}
       {needsUtr && (
         <section className="bg-white rounded-lg shadow-soft p-5 sm:p-6 border border-gray-50 space-y-6">
@@ -188,14 +218,19 @@ const OrderDetail = () => {
       )}
 
       {order.status === 'payment_pending' && order.payment_status === 'rejected' && (
-        <section className="bg-red-50 border border-red-200 rounded-lg p-5 font-body text-sm text-red-800">
-          The shop could not find this payment. Please send a screenshot of your UPI payment on WhatsApp.
+        <section className="bg-red-50 border border-red-200 rounded-lg p-5 space-y-4">
+          <p className="font-body text-sm text-red-800">
+            The shop could not find a payment with UTR {order.upi_utr}. Please check the number in your UPI app and enter it again,
+            or send a screenshot of the payment on WhatsApp. If you have not paid yet, pay {formatPrice(order.total)} below.
+          </p>
+          <PayBox order={order} payment={payment} />
+          <UtrForm order={{ ...order, upi_utr: '' }} onSaved={load} />
         </section>
       )}
 
-      {order.status === 'shipped' && (order.courier || order.tracking_no) && (
+      {['shipped', 'delivered'].includes(order.status) && (order.courier || order.tracking_no) && (
         <section className="bg-white rounded-lg shadow-soft p-5 border border-gray-50 font-body text-sm">
-          <p className="font-semibold text-charcoal mb-1">Shipped</p>
+          <p className="font-semibold text-charcoal mb-1">{order.status === 'delivered' ? 'Delivered' : 'Shipped'}</p>
           <p className="text-gray-600">{order.courier}{order.tracking_no ? ` · Tracking no. ${order.tracking_no}` : ''}</p>
         </section>
       )}

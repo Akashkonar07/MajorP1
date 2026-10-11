@@ -2,8 +2,9 @@ import React, { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { useAuth } from '../../context/AuthContext';
 import { supabase } from '../../lib/supabase';
+import { formatPrice } from '../../lib/catalogue';
 
-// Step 4: a simple welcome page. Orders, low stock and sales figures arrive in Steps 5–7.
+// Owner's overview: orders that need her, sales, and online stock
 const count = async (table, filter) => {
   let query = supabase.from(table).select('*', { count: 'exact', head: true });
   if (filter) query = filter(query);
@@ -15,23 +16,52 @@ const Dashboard = () => {
   const { profile } = useAuth();
   const [stats, setStats] = useState(null);
 
+  const [action, setAction] = useState(null);
+
   useEffect(() => {
     Promise.all([
       count('products', q => q.eq('is_active', true)),
       count('products', q => q.eq('is_active', false)),
       count('product_variants'),
-      count('orders'),
       count('product_variants', q => q.eq('stock', 0).eq('is_active', true)),
       supabase.from('product_variants').select('stock, low_stock_threshold').gt('stock', 0).eq('is_active', true)
         .then(({ data }) => (data ?? []).filter(v => v.stock <= v.low_stock_threshold).length),
-    ]).then(([live, hidden, colours, orders, out, low]) => setStats({ live, hidden, colours, orders, out, low }));
+    ]).then(([live, hidden, colours, out, low]) => setStats({ live, hidden, colours, out, low }));
+
+    // Orders from the 1st of this month + all open orders
+    const monthStart = new Date();
+    monthStart.setDate(1);
+    monthStart.setHours(0, 0, 0, 0);
+    const todayStart = new Date();
+    todayStart.setHours(0, 0, 0, 0);
+    supabase.from('orders').select('status, payment_status, upi_utr, total, created_at')
+      .or(`created_at.gte."${monthStart.toISOString()}",status.in.(payment_pending,payment_verified,packed,return_requested,exchange_requested)`)
+      .then(({ data }) => {
+        const rows = data ?? [];
+        const sold = o => o.payment_status === 'verified' && !['cancelled', 'returned'].includes(o.status);
+        setAction({
+          verify: rows.filter(o => o.status === 'payment_pending' && o.upi_utr && o.payment_status === 'pending').length,
+          pack: rows.filter(o => o.status === 'payment_verified').length,
+          ship: rows.filter(o => o.status === 'packed').length,
+          returns: rows.filter(o => ['return_requested', 'exchange_requested'].includes(o.status)).length,
+          today: rows.filter(o => new Date(o.created_at) >= todayStart && o.status !== 'cancelled').length,
+          month: rows.filter(o => new Date(o.created_at) >= monthStart && sold(o)).reduce((sum, o) => sum + Number(o.total), 0),
+        });
+      });
   }, []);
 
+  const todo = [
+    { label: 'Payments to check', value: action?.verify, tab: 'verify', icon: 'currency_rupee' },
+    { label: 'Orders to pack', value: action?.pack, tab: 'pack', icon: 'inventory_2' },
+    { label: 'Orders to ship', value: action?.ship, tab: 'ship', icon: 'local_shipping' },
+    { label: 'Returns / exchanges', value: action?.returns, tab: 'returns', icon: 'swap_horiz' },
+  ];
+
   const tiles = [
+    { label: "Today's orders", value: action?.today, icon: 'today' },
+    { label: "This month's sales (paid)", value: action ? formatPrice(action.month) : undefined, icon: 'trending_up' },
     { label: 'Sarees on the website', value: stats?.live, icon: 'checkroom' },
     { label: 'Hidden sarees', value: stats?.hidden, icon: 'visibility_off' },
-    { label: 'Colours', value: stats?.colours, icon: 'palette' },
-    { label: 'Orders', value: stats?.orders, icon: 'receipt_long' },
     { label: 'Colours low on online stock', value: stats?.low, icon: 'warning' },
     { label: 'Colours out of stock', value: stats?.out, icon: 'block' },
   ];
@@ -42,6 +72,20 @@ const Dashboard = () => {
       <h1 className="font-heading text-3xl sm:text-4xl font-semibold text-charcoal mb-8">
         Namaste{profile?.full_name ? `, ${profile.full_name.split(' ')[0]}` : ''}
       </h1>
+
+      <p className="font-body font-semibold text-xs uppercase tracking-wide text-gray-500 mb-2">Needs your attention</p>
+      <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 mb-8">
+        {todo.map(({ label, value, tab, icon }) => (
+          <Link key={tab} to={`/admin/orders?tab=${tab}`}
+            className={`rounded-lg p-4 border transition-colors ${value ? 'bg-amber-50 border-amber-300 hover:border-maroon-900' : 'bg-white border-gray-100 hover:border-maroon-900'}`}>
+            <span className={`material-symbols-outlined mb-1 block ${value ? 'text-amber-700' : 'text-gray-400'}`}>{icon}</span>
+            <p className="font-heading text-3xl font-bold text-charcoal">
+              {value ?? <span className="inline-block w-8 h-7 bg-gray-100 rounded animate-pulse align-middle" />}
+            </p>
+            <p className="font-body text-xs text-gray-600">{label}</p>
+          </Link>
+        ))}
+      </div>
 
       <div className="grid grid-cols-2 lg:grid-cols-3 gap-4 mb-8">
         {tiles.map(({ label, value, icon }) => (
