@@ -33,6 +33,7 @@ Customers browse the shop's real catalogue, choose a colour, add fall beading / 
 - **Pricing rule built in**: she enters her own price, the website price is calculated automatically (and can be overridden)
 - **Online stock** per colour with a full **stock register** (who changed what, when and why)
 - **Orders**: verify or reject UPI payments, mark packed, shipped (courier + tracking no.) and delivered, record returns / exchanges, cancel (stock is returned), ready-made WhatsApp messages to the customer
+- **Settings**: UPI ID, delivery charges and tailoring prices; categories; customer list; read-only activity log; **CSV backup** of sarees, orders, customers and stock
 - **Two separate inventories**: online stock for the website, and a private in-shop stock record (items, stock in / sold / damaged, history, low-stock list)
 
 ### Security
@@ -122,7 +123,7 @@ server/                 early Express prototype — no longer used, to be remove
 - [x] Admin orders: payment verification, packing, shipping, returns
 - [x] Order on WhatsApp button, About, Services, Policies, 404
 - [x] Private in-shop inventory
-- [ ] Settings, categories, activity log, CSV backup
+- [x] Settings, categories, customers, activity log, CSV backup
 - [ ] Deployment and mobile testing
 
 ## Future scope (Semester VIII)

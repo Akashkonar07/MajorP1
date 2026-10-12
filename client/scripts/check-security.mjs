@@ -43,6 +43,8 @@ const run = async (label, db) => {
   check('cannot create an order directly', blocked(await db.from('orders')
     .insert({ subtotal: 1, total: 1, shipping_address: {} }).select()));
   check('cannot change settings', blocked(await db.from('settings').update({ upi_id: 'hacker@upi' }).eq('id', 1).select()));
+  check('cannot change tailoring prices', blocked(await db.from('services').update({ price: 1 }).neq('price', -1).select()));
+  check('cannot add a category', blocked(await db.from('categories').insert({ name: 'Hack', slug: 'hack' }).select()));
   check('cannot add a shop item', blocked(await db.from('shop_items').insert({ name: 'Hack', selling_price: 1 }).select()));
   for (const t of ['stock_movements', 'admin_activity_log', 'shop_items', 'shop_stock_movements']) {
     check(`cannot read ${t}`, blocked(await db.from(t).select('*')));

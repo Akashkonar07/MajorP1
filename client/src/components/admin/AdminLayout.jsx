@@ -12,8 +12,8 @@ const NAV = [
       { label: 'Sarees', icon: 'checkroom', to: '/admin/sarees' },
       { label: 'Orders', icon: 'receipt_long', to: '/admin/orders' },
       { label: 'Online Stock Register', icon: 'inventory', to: '/admin/stock-register' },
-      { label: 'Customers', icon: 'group', to: null },
-      { label: 'Categories', icon: 'category', to: null },
+      { label: 'Customers', icon: 'group', to: '/admin/customers' },
+      { label: 'Categories', icon: 'category', to: '/admin/categories' },
     ],
   },
   {
@@ -26,8 +26,8 @@ const NAV = [
   {
     title: 'Settings',
     items: [
-      { label: 'Shop Settings', icon: 'settings', to: null },
-      { label: 'Activity Log', icon: 'fact_check', to: null },
+      { label: 'Shop Settings', icon: 'settings', to: '/admin/settings' },
+      { label: 'Activity Log', icon: 'fact_check', to: '/admin/activity' },
     ],
   },
 ];

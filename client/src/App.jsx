@@ -31,6 +31,10 @@ import OrderView from './pages/admin/OrderView';
 import ShopItems from './pages/admin/ShopItems';
 import ShopItemForm from './pages/admin/ShopItemForm';
 import ShopHistory from './pages/admin/ShopHistory';
+import Settings from './pages/admin/Settings';
+import Categories from './pages/admin/Categories';
+import Customers from './pages/admin/Customers';
+import ActivityLog from './pages/admin/ActivityLog';
 
 // Customer pages share the shop header and footer
 const ShopLayout = () => (
@@ -64,6 +68,11 @@ function App() {
                 <Route path="shop-items/new" element={<ShopItemForm key="new" />} />
                 <Route path="shop-items/:id" element={<ShopItemForm />} />
                 <Route path="shop-history" element={<ShopHistory />} />
+                <Route path="settings" element={<Settings />} />
+                <Route path="categories" element={<Categories />} />
+                <Route path="customers" element={<Customers />} />
+                <Route path="activity" element={<ActivityLog />} />
+                <Route path="*" element={<p className="font-body text-sm text-gray-500">Page not found.</p>} />
               </Route>
 
               {/* Shop */}
