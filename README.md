@@ -4,6 +4,8 @@ An online store and admin panel built for a real saree shop: **Vaibhav Laxmi Sar
 
 Customers browse the shop's real catalogue, choose a colour, add fall beading / pico, and pay by **UPI**. The owner manages sarees, photos, online stock and orders from her phone, and keeps a **private record of in-shop stock** that customers never see.
 
+> **Full technical overview:** [docs/PROJECT_OVERVIEW.md](docs/PROJECT_OVERVIEW.md) — architecture, order flow, database and security diagrams.
+
 > Final-year B.E. Information Technology major project — SIES Graduate School of Technology, University of Mumbai (2026–27). An outhouse project developed for a real client.
 
 ## Team
@@ -86,6 +88,7 @@ supabase/migrations/    database tables, security rules and functions — run in
 supabase/snippets/      hand-run SQL (e.g. make a user an admin)
 scripts/                one-time catalogue upload script (uses a secret key kept off Git)
 catalogue/CATALOGUE.md  how the real catalogue was prepared (the catalogue itself is private)
+docs/PROJECT_OVERVIEW.md  architecture, features, order flow, database, security and tests in one place
 docs/brand/             logo and brand kit
 server/                 early Express prototype — no longer used, to be removed
 ```
