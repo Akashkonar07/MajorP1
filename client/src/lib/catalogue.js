@@ -88,6 +88,11 @@ export function stockStatus(variant) {
   return 'in';
 }
 export const isOrderable = variant => stockStatus(variant) !== 'out';
+// Whole saree sold out = every visible colour has online stock 0 (it stays on the site, marked "Out of stock")
+export const isSoldOut = product => {
+  const colours = (product.variants ?? []).filter(v => v.is_active !== false);
+  return colours.length > 0 && colours.every(v => stockStatus(v) === 'out');
+};
 
 // ---- Filter groups ----------------------------------------------------------
 // Colour and fabric names in the catalogue are descriptive ("Beige & Red",

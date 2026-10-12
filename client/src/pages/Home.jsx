@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { useWishlist } from '../context/WishlistContext';
-import { fetchCatalogue, formatPrice } from '../lib/catalogue';
+import { fetchCatalogue, formatPrice, isSoldOut } from '../lib/catalogue';
 
 const HERO_IMG = 'https://lh3.googleusercontent.com/aida-public/AB6AXuAS03cL2sHzbHQTc-fhSrmftUV9E7eUJMvCeAiLXkYrx95lZADj2bynqqIj7l85dYUUOZ4cPCSeT8O-eaPlJkQD69c2t4KrAzxL4TU4zr0KyqfZgPFGiQrItkN_IOB_UPZRGh9GBrgbMQ2X9w10DBgRhB_7de_MeSgB0_gi7bRpYcixPR7GS9OkCnRfw-E1kLl0FV-bLVu5oM28VPvdnJf2Bzm9InftvrBSeL65LrxSimRl52wwsVo4tQ';
 const ARTISAN_IMG = 'https://lh3.googleusercontent.com/aida-public/AB6AXuClfe1uHeZUtqc6O9_JeM7FrC8NQkN0oVdjUHs9qDw6Znqm2IqZAfaeC-e0zTRsSuAYgQrb8DLaEx7wnKjA3kwzkd72VzuA1QY--4AJBT598m7Dzy5pU7XTrMBXxmM_bKTqUuQAh8S4gzCurMXRwAXUD2OG1oLMN7x4oji2NDJ9iajtpa6hqYkm_jZWymTmNV4dRV0044eBRoOe4p87HqYLXGT9qWlw-4l7sOxMZCMigYUrJ8PPD4y3SA';
@@ -15,7 +15,8 @@ const TRUST_BADGES = [
 ];
 
 // One saree from each category first, so the featured row shows variety
-function pickFeatured(products, count = 8) {
+function pickFeatured(all, count = 8) {
+  const products = all.filter(p => !isSoldOut(p));   // never feature a sold-out saree
   const seen = new Set();
   const first = products.filter(p => !seen.has(p.category?.slug) && seen.add(p.category?.slug));
   const rest = products.filter(p => !first.includes(p));

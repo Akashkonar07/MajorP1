@@ -1,16 +1,17 @@
-# React + Vite
+# client — website and admin panel
 
-This template provides a minimal setup to get React working in Vite with HMR and some Oxlint rules.
+React 19 + Vite + Tailwind. See the [main README](../README.md) for the full project.
 
-Currently, two official plugins are available:
+```bash
+cp .env.example .env.local   # Supabase URL + publishable (anon) key
+npm install
+npm run dev                  # http://localhost:3000  (admin: /admin/login)
+npm run build                # production build in dist/
+npm run lint                 # oxlint
+npm run check:security       # tests the live Supabase security rules
+```
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Oxc](https://oxc.rs)
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/)
-
-## React Compiler
-
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
-
-## Expanding the Oxlint configuration
-
-If you are developing a production application, we recommend using TypeScript with type-aware lint rules enabled. Check out the [TS template](https://github.com/vitejs/vite/tree/main/packages/create-vite/template-react-ts) for information on how to integrate TypeScript and Oxlint's TypeScript related rules in your project.
+- `src/pages/` — customer pages · `src/pages/admin/` — admin pages
+- `src/lib/` — all Supabase calls (`catalogue.js`, `orders.js`, `admin.js`, `adminOrders.js`) and form rules (`validation.js`)
+- `src/context/` — login, bag and wishlist state
+- `src/config/shop.js` — shop address, phone and hours in one place

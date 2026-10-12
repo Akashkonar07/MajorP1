@@ -1,5 +1,5 @@
 import React, { useEffect, useMemo, useState } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useSearchParams } from 'react-router-dom';
 import { fetchAdminProducts, setProductActive, adjustStock } from '../../lib/admin';
 import { formatPrice } from '../../lib/catalogue';
 
@@ -144,7 +144,8 @@ const SareeCard = ({ product, onChanged }) => {
 const Sarees = () => {
   const [products, setProducts] = useState(null);
   const [error, setError] = useState('');
-  const [tab, setTab] = useState('live');
+  const [params] = useSearchParams();
+  const [tab, setTab] = useState(TABS.some(t => t.key === params.get('tab')) ? params.get('tab') : 'live');
   const [search, setSearch] = useState('');
 
   const load = () => fetchAdminProducts()

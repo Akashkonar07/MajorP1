@@ -2,7 +2,7 @@ import React, { useState, useEffect, useMemo } from 'react';
 import { Link, useParams, useSearchParams } from 'react-router-dom';
 import ProductCard from '../components/ProductCard';
 import FilterSidebar from '../components/FilterSidebar';
-import { fetchCatalogue, fetchCategories, productColourFamilies, productFabricFamilies } from '../lib/catalogue';
+import { fetchCatalogue, fetchCategories, productColourFamilies, productFabricFamilies, isSoldOut } from '../lib/catalogue';
 
 const SORT_OPTIONS = [
   { value: 'newest', label: 'Newest First' },
@@ -60,6 +60,8 @@ const Collection = () => {
     if (sort === 'price-asc') list.sort((a, b) => a.price - b.price);
     else if (sort === 'price-desc') list.sort((a, b) => b.price - a.price);
     else if (sort === 'name') list.sort((a, b) => a.name.localeCompare(b.name));
+    // Sold-out sarees stay visible but move to the end (sort is stable, so the chosen order is kept)
+    list.sort((a, b) => isSoldOut(a) - isSoldOut(b));
     return list;                                 // 'newest' = order from the database (newest code first)
   }, [products, filters, sort, search, slug]);
 

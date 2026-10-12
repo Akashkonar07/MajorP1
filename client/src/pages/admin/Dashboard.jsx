@@ -17,6 +17,7 @@ const Dashboard = () => {
   const [stats, setStats] = useState(null);
 
   const [action, setAction] = useState(null);
+  const [alerts, setAlerts] = useState(null);
 
   useEffect(() => {
     Promise.all([
@@ -27,6 +28,12 @@ const Dashboard = () => {
       supabase.from('product_variants').select('stock, low_stock_threshold').gt('stock', 0).eq('is_active', true)
         .then(({ data }) => (data ?? []).filter(v => v.stock <= v.low_stock_threshold).length),
     ]).then(([live, hidden, colours, out, low]) => setStats({ live, hidden, colours, out, low }));
+
+    // Colours that are sold out or running low (only colours with a stock number)
+    supabase.from('product_variants')
+      .select('id, color_name, stock, low_stock_threshold, product:products ( id, code, name, is_active )')
+      .not('stock', 'is', null).eq('is_active', true).order('stock')
+      .then(({ data }) => setAlerts((data ?? []).filter(v => v.product?.is_active && v.stock <= v.low_stock_threshold)));
 
     // Orders from the 1st of this month + all open orders
     const monthStart = new Date();
@@ -97,6 +104,31 @@ const Dashboard = () => {
             <p className="font-body text-xs text-gray-500 mt-1">{label}</p>
           </div>
         ))}
+      </div>
+
+      <div className="bg-white rounded-lg shadow-soft border border-gray-50 p-5 mb-8">
+        <h2 className="font-heading text-xl font-semibold text-charcoal mb-1">Stock alerts</h2>
+        <p className="font-body text-xs text-gray-500 mb-3">
+          Sold-out colours stay on the website marked “Out of stock” (customers can't order them). Add stock or hide the saree from Sarees.
+        </p>
+        {alerts === null ? <div className="h-12 bg-gray-50 rounded animate-pulse" /> : alerts.length === 0 ? (
+          <p className="font-body text-sm text-gray-500">No colours are low or sold out.</p>
+        ) : (
+          <div className="divide-y divide-gray-100">
+            {alerts.slice(0, 12).map(v => (
+              <Link key={v.id} to={`/admin/sarees/${v.product.id}`} className="flex items-center gap-3 py-2 font-body text-sm hover:bg-maroon-50/40 -mx-2 px-2 rounded">
+                <span className={`w-20 shrink-0 text-xs font-semibold ${v.stock === 0 ? 'text-red-600' : 'text-amber-600'}`}>
+                  {v.stock === 0 ? 'Sold out' : `${v.stock} left`}
+                </span>
+                <span className="flex-1 min-w-0 truncate">
+                  <span className="text-gold-700 text-xs font-semibold">{v.product.code}</span> {v.product.name} · {v.color_name}
+                </span>
+                <span className="material-symbols-outlined text-gray-400 text-base">chevron_right</span>
+              </Link>
+            ))}
+          </div>
+        )}
+        {alerts?.length > 12 && <Link to="/admin/sarees?tab=out" className="font-body text-xs text-maroon-900 underline">See all</Link>}
       </div>
 
       <div className="grid sm:grid-cols-2 gap-4">
