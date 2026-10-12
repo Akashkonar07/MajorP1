@@ -2,6 +2,8 @@
 
 An online store and admin panel built for a real saree shop: **Vaibhav Laxmi Saree**, Kamothe, Navi Mumbai (since 2016) — *“A Saree for Every Occasion”*.
 
+**Live site:** https://vaibhav-laxmi-saree.vercel.app
+
 Customers browse the shop's real catalogue, choose a colour, add fall beading / pico, and pay by **UPI**. The owner manages sarees, photos, online stock and orders from her phone, and keeps a **private record of in-shop stock** that customers never see.
 
 > **Full technical overview:** [docs/PROJECT_OVERVIEW.md](docs/PROJECT_OVERVIEW.md) — architecture, order flow, database and security diagrams.
@@ -115,7 +117,8 @@ server/                 early Express prototype — no longer used, to be remove
 - [x] Order on WhatsApp button, About, Services, Policies, 404
 - [x] Private in-shop inventory
 - [x] Settings, categories, customers, activity log, CSV backup
-- [ ] Deployment and mobile testing
+- [x] Deployment (Vercel) and phone-width testing
+- [ ] Demo rehearsal
 
 ## Future scope (Semester VIII)
 - Cash on Delivery and courier integration (after the shop signs a delivery partner)
