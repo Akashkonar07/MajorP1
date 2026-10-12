@@ -34,8 +34,8 @@ const Header = () => {
   const navLinks = [
     { to: '/', label: 'Home', exact: true },
     { to: '/collection', label: 'Collection' },
-    { to: '/wishlist', label: 'Wishlist' },
-    { to: '/cart', label: 'Cart', highlight: true },
+    { to: '/services', label: 'Services' },
+    { to: '/about', label: 'About' },
     { to: '/store-locator', label: 'Store Locator' },
   ];
 
@@ -56,7 +56,7 @@ const Header = () => {
           </Link>
 
           {/* Nav - Desktop */}
-          <nav className="hidden md:flex items-center gap-1">
+          <nav className="hidden lg:flex items-center gap-1">
             {navLinks.map(({ to, label, exact, highlight }) => (
               <NavLink
                 key={to}
@@ -64,12 +64,12 @@ const Header = () => {
                 end={exact}
                 className={({ isActive }) =>
                   highlight
-                    ? `px-4 py-1.5 rounded-sm font-body font-medium text-sm transition-all duration-200 ${
+                    ? `px-4 py-1.5 rounded-sm font-body font-medium text-sm whitespace-nowrap transition-all duration-200 ${
                         isActive
                           ? 'bg-maroon-900 text-white'
                           : 'bg-maroon-900 text-white hover:bg-maroon-800'
                       }`
-                    : `px-3 py-1.5 font-body font-medium text-sm transition-colors duration-200 ${
+                    : `px-3 py-1.5 font-body font-medium text-sm whitespace-nowrap transition-colors duration-200 ${
                         isActive
                           ? 'text-maroon-900 border-b-2 border-maroon-900'
                           : 'text-charcoal hover:text-maroon-900'
@@ -104,10 +104,10 @@ const Header = () => {
             ) : (
               <button
                 onClick={() => setSearchOpen(true)}
-                className="flex items-center gap-1 border border-gray-200 rounded-sm px-3 py-1.5 text-sm text-gray-500 hover:border-maroon-900 hover:text-maroon-900 transition-colors hidden md:flex"
+                className="flex items-center gap-1 border border-gray-200 rounded-sm px-3 py-1.5 text-sm text-gray-500 hover:border-maroon-900 hover:text-maroon-900 transition-colors hidden lg:flex"
               >
                 <span className="material-symbols-outlined text-base">search</span>
-                <span className="font-body text-sm">Search sarees...</span>
+                <span className="font-body text-sm whitespace-nowrap hidden xl:inline">Search sarees...</span>
               </button>
             )}
 
@@ -146,7 +146,7 @@ const Header = () => {
             <Link
               to={accountLink}
               aria-label={user ? 'My account' : 'Log in'}
-              className="p-2 hover:text-maroon-900 transition-colors hidden md:block"
+              className="p-2 hover:text-maroon-900 transition-colors hidden lg:block"
             >
               <span
                 className={`material-symbols-outlined text-xl ${user ? 'text-maroon-900' : 'text-charcoal'}`}
@@ -158,7 +158,7 @@ const Header = () => {
 
             {/* Mobile menu toggle */}
             <button
-              className="md:hidden p-2"
+              className="lg:hidden p-2"
               onClick={() => setMenuOpen(!menuOpen)}
             >
               <span className="material-symbols-outlined text-xl text-charcoal">
@@ -170,7 +170,7 @@ const Header = () => {
 
         {/* Mobile menu */}
         {menuOpen && (
-          <div className="md:hidden border-t border-gray-100 py-3">
+          <div className="lg:hidden border-t border-gray-100 py-3">
             {navLinks.map(({ to, label }) => (
               <NavLink
                 key={to}

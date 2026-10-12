@@ -22,7 +22,18 @@ export const SHOP = {
   phoneHref: 'tel:+919320079225',
   whatsappHref: 'https://wa.me/919320079225',
   email: 'mamtavaibhavlaxmi@gmail.com',
+  gstin: '27AQSPM3230A1Z2',
   hours: '10:00 AM – 10:00 PM',
   mapsUrl: `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(MAPS_QUERY)}`,
   mapsEmbedUrl: `https://maps.google.com/maps?q=${encodeURIComponent(MAPS_QUERY)}&output=embed`,
 };
+
+// About page story (project brief §2)
+export const ABOUT_STORY =
+  'Since 2016, Vaibhav Laxmi Saree has been dressing the women of Kamothe in sarees they love. ' +
+  'From everyday cottons and printed sarees to fancy and partywear designs, we keep a saree for every occasion and every budget. ' +
+  'Our in-shop tailor completes your look with blouse stitching, fall and pico, so your saree is ready to wear. ' +
+  'Now you can shop our collection from anywhere in India.';
+
+// WhatsApp chat with a ready-typed message
+export const whatsappWith = text => `${SHOP.whatsappHref}?text=${encodeURIComponent(text)}`;

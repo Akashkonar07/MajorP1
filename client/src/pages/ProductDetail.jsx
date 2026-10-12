@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { useParams, useSearchParams, Link } from 'react-router-dom';
 import { useCart } from '../context/CartContext';
 import { useWishlist } from '../context/WishlistContext';
-import { SHOP } from '../config/shop';
+import { SHOP, whatsappWith } from '../config/shop';
 import { supabase } from '../lib/supabase';
 import {
   fetchProductBySlug, formatPrice, stockStatus, isOrderable, AVAILABILITY_NOTE,
@@ -295,6 +295,22 @@ const ProductDetail = () => {
                 </span>
               </button>
             </div>
+
+            {/* Order on WhatsApp: same saree + colour, ready-typed */}
+            <a
+              href={whatsappWith(
+                `Namaste, I would like to ${orderable ? 'order' : 'ask about'} this saree:\n` +
+                `${product.name}${product.code ? ` (${product.code})` : ''}\n` +
+                `Colour: ${variant?.color_name ?? '-'}\nPrice: ${formatPrice(product.price)}\n` +
+                `${window.location.origin}/product/${product.slug}?colour=${encodeURIComponent(variant?.color_name ?? '')}`
+              )}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="w-full mb-4 flex items-center justify-center gap-2 font-body font-semibold py-3 rounded-sm border-2 border-emerald-700 text-emerald-800 hover:bg-emerald-50 transition-colors"
+            >
+              <span className="material-symbols-outlined text-lg">chat</span>
+              {orderable ? 'Order on WhatsApp' : 'Ask on WhatsApp'}
+            </a>
 
             {status === 'untracked' && (
               <p className="flex items-start gap-2 font-body text-xs text-gray-500 mb-5">

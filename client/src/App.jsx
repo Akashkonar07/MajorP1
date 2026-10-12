@@ -15,6 +15,10 @@ import Login from './pages/Login';
 import Account from './pages/Account';
 import Checkout from './pages/Checkout';
 import OrderDetail from './pages/OrderDetail';
+import About from './pages/About';
+import Services from './pages/Services';
+import Policies from './pages/Policies';
+import NotFound from './pages/NotFound';
 import AdminRoute from './components/admin/AdminRoute';
 import AdminLayout from './components/admin/AdminLayout';
 import AdminLogin from './pages/admin/AdminLogin';
@@ -68,6 +72,10 @@ function App() {
                 <Route path="/store-locator" element={<StoreLocator />} />
                 <Route path="/login" element={<Login />} />
                 <Route path="/account" element={<Account />} />
+                <Route path="/about" element={<About />} />
+                <Route path="/services" element={<Services />} />
+                <Route path="/policies" element={<Policies />} />
+                <Route path="*" element={<NotFound />} />
               </Route>
             </Routes>
           </WishlistProvider>

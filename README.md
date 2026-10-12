@@ -120,7 +120,7 @@ server/                 early Express prototype — no longer used, to be remove
 - [x] Admin: sarees, photos, pricing rule, online stock, stock register
 - [x] Checkout with delivery charges, add-ons and UPI payment
 - [x] Admin orders: payment verification, packing, shipping, returns
-- [ ] Order on WhatsApp button, About, Services, Policies, 404
+- [x] Order on WhatsApp button, About, Services, Policies, 404
 - [ ] Private in-shop inventory
 - [ ] Settings, categories, activity log, CSV backup
 - [ ] Deployment and mobile testing
