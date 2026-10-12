@@ -1,0 +1,15 @@
+stateDiagram-v2
+  [*] --> payment_pending: place_order()
+  payment_pending --> payment_verified: owner verifies UTR
+  payment_pending --> cancelled: customer (before paying) or owner
+  payment_verified --> packed
+  payment_verified --> cancelled: owner, refund by UPI
+  packed --> shipped: courier + tracking no.
+  packed --> cancelled: owner, refund by UPI
+  shipped --> delivered
+  delivered --> return_requested
+  delivered --> exchange_requested
+  return_requested --> returned
+  return_requested --> delivered: request closed
+  exchange_requested --> shipped: replacement sent
+  exchange_requested --> delivered: request closed

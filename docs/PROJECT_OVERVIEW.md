@@ -10,21 +10,9 @@ How the Vaibhav Laxmi Saree website and admin panel are built, for the team, our
 
 There is no server of our own. The React app talks to Supabase directly with the public key, and Supabase's rules (Row Level Security and database functions) decide what each person may read or change.
 
-```mermaid
-flowchart LR
-  C["Customer<br/>phone or laptop"] --> APP["React app on Vercel<br/>15 shop + 14 admin screens<br/>supabase-js (public key)"]
-  O["Owner<br/>admin panel on phone"] --> APP
-  APP --> SB
-  SEED["Catalogue upload script<br/>one-time, secret key<br/>kept off Git"] --> SB
-  subgraph SB["Supabase"]
-    AUTH["Auth<br/>email login"]
-    DB[("PostgreSQL<br/>RLS on every table")]
-    FN["Database functions<br/>place_order, adjust_stock,<br/>admin_set_order_status"]
-    ST["Storage<br/>products (public)<br/>shop-item-photos (private)"]
-  end
-  C -. "pays in own UPI app,<br/>types the UTR" .-> UPI["Shop's UPI ID"]
-  UPI -. "owner checks the UTR" .-> O
-```
+![System architecture](diagrams/architecture.svg)
+
+<sub>Diagram source: [diagrams/architecture.mmd](diagrams/architecture.mmd) (Mermaid)</sub>
 
 | Layer | Tools |
 |---|---|
@@ -69,42 +57,13 @@ flowchart LR
 
 ## 3. Order flow
 
-```mermaid
-stateDiagram-v2
-  [*] --> payment_pending: place_order()
-  payment_pending --> payment_verified: owner verifies UTR
-  payment_pending --> cancelled: customer (before paying) or owner
-  payment_verified --> packed
-  payment_verified --> cancelled: owner, refund by UPI
-  packed --> shipped: courier + tracking no.
-  packed --> cancelled: owner, refund by UPI
-  shipped --> delivered
-  delivered --> return_requested
-  delivered --> exchange_requested
-  return_requested --> returned
-  return_requested --> delivered: request closed
-  exchange_requested --> shipped: replacement sent
-  exchange_requested --> delivered: request closed
-```
+![Order status flow](diagrams/order-states.svg)
 
-```mermaid
-sequenceDiagram
-  actor Customer
-  participant App as React app
-  participant DB as Supabase (database functions)
-  actor Owner
-  Customer->>App: Bag → Checkout (address, add-ons)
-  App->>DB: delivery_quote(pincode, sarees)
-  App->>DB: place_order(colour ids, qty, add-on ids, address)
-  DB-->>App: order no. + total (prices read from the database)
-  Customer->>Customer: pays the shop's UPI ID in own UPI app
-  Customer->>App: enters 12-digit UTR
-  App->>DB: submit_utr(order, utr)
-  Owner->>App: Admin → Orders → Check payment
-  App->>DB: admin_set_order_status(order, payment_verified)
-  Owner->>App: Packed → Shipped (courier, tracking no.) → Delivered
-  Customer->>App: My Orders shows status and tracking
-```
+<sub>Diagram source: [diagrams/order-states.mmd](diagrams/order-states.mmd) (Mermaid)</sub>
+
+![Order placed, paid and shipped](diagrams/order-sequence.svg)
+
+<sub>Diagram source: [diagrams/order-sequence.mmd](diagrams/order-sequence.mmd) (Mermaid)</sub>
 
 **Business rules**
 
@@ -121,21 +80,9 @@ sequenceDiagram
 
 ## 4. Database
 
-```mermaid
-erDiagram
-  profiles ||--o{ addresses : saves
-  profiles ||--o{ orders : places
-  categories ||--o{ products : groups
-  products ||--|| product_costs : "base price (admin-only)"
-  products ||--o{ product_variants : "colours"
-  products ||--o{ product_images : photos
-  product_variants ||--o{ product_images : "colour photos"
-  product_variants ||--o{ stock_movements : "online stock register"
-  orders ||--o{ order_items : contains
-  product_variants ||--o{ order_items : "ordered colour"
-  shop_items ||--o{ shop_stock_movements : "in-shop history"
-  profiles ||--o{ admin_activity_log : "admin changes"
-```
+![Database tables and links](diagrams/database.svg)
+
+<sub>Diagram source: [diagrams/database.mmd](diagrams/database.mmd) (Mermaid)</sub>
 
 Plus `services` (tailoring price list; fall beading and pico are online add-ons) and `settings` (one row: UPI ID, payee name, delivery zones, extra-saree charge, shop info).
 

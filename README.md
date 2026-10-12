@@ -58,19 +58,7 @@ Customers browse the shop's real catalogue, choose a colour, add fall beading / 
 | Validation | Zod (browser) + database constraints and checks |
 | Hosting | Vercel (frontend) + Supabase (free tier) |
 
-```mermaid
-flowchart LR
-  C["Customer's phone / browser"] --> V["React app on Vercel"]
-  A["Owner's phone (admin panel)"] --> V
-  V -->|"supabase-js (public key)"| SB
-  subgraph SB["Supabase"]
-    AU["Auth"]
-    DB[("PostgreSQL + Row Level Security")]
-    F["Database functions: place_order, adjust_stock, admin_set_order_status"]
-    ST["Storage: saree photos"]
-  end
-  C -.->|"UPI payment"| U["Customer's UPI app → shop's UPI ID"]
-```
+![System architecture](docs/diagrams/architecture.svg)
 
 There is no separate application server: the browser talks to Supabase directly, and the database itself decides what each user may read or change.
 

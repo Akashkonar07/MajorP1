@@ -1,0 +1,13 @@
+erDiagram
+  profiles ||--o{ addresses : saves
+  profiles ||--o{ orders : places
+  categories ||--o{ products : groups
+  products ||--|| product_costs : "base price (admin-only)"
+  products ||--o{ product_variants : "colours"
+  products ||--o{ product_images : photos
+  product_variants ||--o{ product_images : "colour photos"
+  product_variants ||--o{ stock_movements : "online stock register"
+  orders ||--o{ order_items : contains
+  product_variants ||--o{ order_items : "ordered colour"
+  shop_items ||--o{ shop_stock_movements : "in-shop history"
+  profiles ||--o{ admin_activity_log : "admin changes"

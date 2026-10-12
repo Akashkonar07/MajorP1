@@ -1,0 +1,13 @@
+flowchart TB
+  C["Customer<br/>phone or laptop"] --> APP["React app on Vercel<br/>15 shop + 14 admin screens<br/>supabase-js (public key)"]
+  O["Owner<br/>admin panel on phone"] --> APP
+  APP --> SB
+  SEED["Catalogue upload script<br/>one-time, secret key<br/>kept off Git"] --> SB
+  subgraph SB["Supabase"]
+    AUTH["Auth<br/>email login"]
+    DB[("PostgreSQL<br/>RLS on every table")]
+    FN["Database functions<br/>place_order, adjust_stock,<br/>admin_set_order_status"]
+    ST["Storage<br/>products (public)<br/>shop-item-photos (private)"]
+  end
+  C -. "pays in own UPI app,<br/>types the UTR" .-> UPI["Shop's UPI ID"]
+  UPI -. "owner checks the UTR" .-> O

@@ -1,0 +1,16 @@
+sequenceDiagram
+  actor Customer
+  participant App as React app
+  participant DB as Supabase (database functions)
+  actor Owner
+  Customer->>App: Bag → Checkout (address, add-ons)
+  App->>DB: delivery_quote(pincode, sarees)
+  App->>DB: place_order(colour ids, qty, add-on ids, address)
+  DB-->>App: order no. + total (prices read from the database)
+  Customer->>Customer: pays the shop's UPI ID in own UPI app
+  Customer->>App: enters 12-digit UTR
+  App->>DB: submit_utr(order, utr)
+  Owner->>App: Admin → Orders → Check payment
+  App->>DB: admin_set_order_status(order, payment_verified)
+  Owner->>App: Packed → Shipped (courier, tracking no.) → Delivered
+  Customer->>App: My Orders shows status and tracking
