@@ -28,6 +28,9 @@ import SareeForm from './pages/admin/SareeForm';
 import StockRegister from './pages/admin/StockRegister';
 import Orders from './pages/admin/Orders';
 import OrderView from './pages/admin/OrderView';
+import ShopItems from './pages/admin/ShopItems';
+import ShopItemForm from './pages/admin/ShopItemForm';
+import ShopHistory from './pages/admin/ShopHistory';
 
 // Customer pages share the shop header and footer
 const ShopLayout = () => (
@@ -57,6 +60,10 @@ function App() {
                 <Route path="stock-register" element={<StockRegister />} />
                 <Route path="orders" element={<Orders />} />
                 <Route path="orders/:id" element={<OrderView />} />
+                <Route path="shop-items" element={<ShopItems />} />
+                <Route path="shop-items/new" element={<ShopItemForm key="new" />} />
+                <Route path="shop-items/:id" element={<ShopItemForm />} />
+                <Route path="shop-history" element={<ShopHistory />} />
               </Route>
 
               {/* Shop */}

@@ -19,8 +19,8 @@ const NAV = [
   {
     title: 'Shop Inventory (private)',
     items: [
-      { label: 'Shop Items', icon: 'storefront', to: null },
-      { label: 'Shop Stock History', icon: 'history', to: null },
+      { label: 'Shop Items', icon: 'storefront', to: '/admin/shop-items' },
+      { label: 'Shop Stock History', icon: 'history', to: '/admin/shop-history' },
     ],
   },
   {

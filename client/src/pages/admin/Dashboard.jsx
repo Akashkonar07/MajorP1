@@ -18,6 +18,7 @@ const Dashboard = () => {
 
   const [action, setAction] = useState(null);
   const [alerts, setAlerts] = useState(null);
+  const [shopLow, setShopLow] = useState(null);
 
   useEffect(() => {
     Promise.all([
@@ -34,6 +35,10 @@ const Dashboard = () => {
       .select('id, color_name, stock, low_stock_threshold, product:products ( id, code, name, is_active )')
       .not('stock', 'is', null).eq('is_active', true).order('stock')
       .then(({ data }) => setAlerts((data ?? []).filter(v => v.product?.is_active && v.stock <= v.low_stock_threshold)));
+
+    // Private shop inventory: items at or below their warning level
+    supabase.from('shop_items').select('qty, low_stock_threshold').eq('is_active', true)
+      .then(({ data }) => setShopLow((data ?? []).filter(i => i.qty <= i.low_stock_threshold).length));
 
     // Orders from the 1st of this month + all open orders
     const monthStart = new Date();
@@ -62,6 +67,7 @@ const Dashboard = () => {
     { label: 'Orders to pack', value: action?.pack, tab: 'pack', icon: 'inventory_2' },
     { label: 'Orders to ship', value: action?.ship, tab: 'ship', icon: 'local_shipping' },
     { label: 'Returns / exchanges', value: action?.returns, tab: 'returns', icon: 'swap_horiz' },
+    { label: 'Shop items low (private)', value: shopLow, link: '/admin/shop-items?filter=low', icon: 'storefront' },
   ];
 
   const tiles = [
@@ -81,9 +87,9 @@ const Dashboard = () => {
       </h1>
 
       <p className="font-body font-semibold text-xs uppercase tracking-wide text-gray-500 mb-2">Needs your attention</p>
-      <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 mb-8">
-        {todo.map(({ label, value, tab, icon }) => (
-          <Link key={tab} to={`/admin/orders?tab=${tab}`}
+      <div className="grid grid-cols-2 lg:grid-cols-5 gap-3 mb-8">
+        {todo.map(({ label, value, tab, link, icon }) => (
+          <Link key={label} to={link ?? `/admin/orders?tab=${tab}`}
             className={`rounded-lg p-4 border transition-colors ${value ? 'bg-amber-50 border-amber-300 hover:border-maroon-900' : 'bg-white border-gray-100 hover:border-maroon-900'}`}>
             <span className={`material-symbols-outlined mb-1 block ${value ? 'text-amber-700' : 'text-gray-400'}`}>{icon}</span>
             <p className="font-heading text-3xl font-bold text-charcoal">
