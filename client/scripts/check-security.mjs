@@ -23,7 +23,7 @@ const blocked = ({ data, error }) => !!error || !data || (Array.isArray(data) &&
 const run = async (label, db) => {
   console.log(`\n— ${label} —`);
 
-  const products = await db.from('products').select('code, price');
+  const products = await db.from('products').select('id, code, price');
   check('can browse sarees', products.data?.length >= 1, products.error?.message ?? `${products.data?.length} sarees`);
   const variants = await db.from('product_variants').select('id').limit(1);
   check('can see colours', variants.data?.length === 1, variants.error?.message);
@@ -49,6 +49,12 @@ const run = async (label, db) => {
   for (const t of ['stock_movements', 'admin_activity_log', 'shop_items', 'shop_stock_movements']) {
     check(`cannot read ${t}`, blocked(await db.from(t).select('*')));
   }
+  // Shopping activity (011): write only through log_event(), read only by admins
+  check('cannot read shopping activity', blocked(await db.from('product_events').select('*')));
+  check('cannot write shopping activity directly', blocked(await db.from('product_events').insert({ product_id: products.data?.[0]?.id, event: 'view', session_id: 'security-check' }).select()));
+  check('cannot see admin insights', !!(await db.rpc('admin_product_insights', { p_days: 30 })).error);
+  check('log_event rejects an unknown saree', !!(await db.rpc('log_event', { p_product_id: '00000000-0000-0000-0000-000000000000', p_event: 'view', p_session_id: 'security-check' })).error);
+  check('log_event rejects a fake order event', !!(await db.rpc('log_event', { p_product_id: products.data?.[0]?.id, p_event: 'order_placed', p_session_id: 'security-check' })).error);
   const upload = await db.storage.from('product-images')
     .upload(`security-check-${Date.now()}.png`, new Blob(['x'], { type: 'image/png' }));
   check('cannot upload photos', !!upload.error, upload.error?.message);

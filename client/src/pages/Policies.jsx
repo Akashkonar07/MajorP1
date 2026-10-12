@@ -108,6 +108,12 @@ const Policies = () => {
           <li>Your name, email, mobile number and delivery address</li>
           <li>Your orders and the UPI reference number you enter</li>
         </ul>
+        <p>
+          <span className="font-semibold text-charcoal">Shopping activity.</span> We record anonymous activity on our own website — which sarees
+          are viewed, wishlisted, added to the bag and ordered — with a random id for your browser (and your account id if you are
+          logged in). It never contains your name, phone, email or address. We use it only to improve which sarees we show, and we
+          never sell or share it.
+        </p>
         <ul>
           <li>We use these details only to process and deliver your orders and to contact you about them. Your address and phone are shared with the courier for delivery only.</li>
           <li>We never sell or share your details for advertising. We do not use advertising or tracking cookies.</li>

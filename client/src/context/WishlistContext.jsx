@@ -1,4 +1,5 @@
 import React, { createContext, useContext, useState, useEffect } from 'react';
+import { logEvent } from '../lib/events';
 
 const WishlistContext = createContext();
 
@@ -17,6 +18,7 @@ export const WishlistProvider = ({ children }) => {
   }, [wishlist]);
 
   const toggleWishlist = (product) => {
+    if (!wishlist.some(i => i.id === product.id)) logEvent(product.id, 'wishlist_add');
     setWishlist(prev => {
       const exists = prev.find(i => i.id === product.id);
       if (exists) return prev.filter(i => i.id !== product.id);

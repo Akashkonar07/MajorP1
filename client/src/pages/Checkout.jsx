@@ -4,6 +4,7 @@ import { useAuth } from '../context/AuthContext';
 import { useCart } from '../context/CartContext';
 import FormField from '../components/FormField';
 import { check, addressSchema } from '../lib/validation';
+import { logEvent } from '../lib/events';
 import { AVAILABILITY_NOTE, formatPrice } from '../lib/catalogue';
 import {
   INDIAN_STATES, deliveryQuote, fetchMyAddresses, fetchOnlineAddons, placeOrder, saveAddress,
@@ -104,6 +105,7 @@ const Checkout = () => {
       const { full_name, phone, line1, line2, city, state, pincode: pin } = deliverTo;
       const order = await placeOrder(cart, picked, { full_name, phone, line1, line2: line2 || '', city, state, pincode: pin });
       if (choice === 'new' && remember) await saveAddress(deliverTo).catch(() => {});   // nice-to-have only
+      cart.forEach(i => logEvent(i.productId, 'order_placed', i.id));
       clearCart();
       navigate(`/order/${order.order_no}`, { replace: true, state: { justPlaced: true } });
     } catch (e) {

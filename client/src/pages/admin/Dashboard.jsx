@@ -3,6 +3,7 @@ import { Link } from 'react-router-dom';
 import { useAuth } from '../../context/AuthContext';
 import { supabase } from '../../lib/supabase';
 import { formatPrice } from '../../lib/catalogue';
+import { fetchInsights } from '../../lib/events';
 
 // Owner's overview: orders that need her, sales, and online stock
 const count = async (table, filter) => {
@@ -12,6 +13,33 @@ const count = async (table, filter) => {
   return n ?? 0;
 };
 
+// Top sarees by one kind of activity (last 30 days)
+const TopList = ({ title, icon, rows, field }) => {
+  const top = (rows ?? []).filter(r => r[field] > 0).sort((a, b) => b[field] - a[field]).slice(0, 5);
+  return (
+    <div>
+      <p className="font-body text-xs font-semibold uppercase tracking-wide text-gray-500 mb-2 flex items-center gap-1">
+        <span className="material-symbols-outlined text-sm text-maroon-900">{icon}</span>{title}
+      </p>
+      {rows === null ? <div className="h-24 bg-gray-50 rounded animate-pulse" /> : top.length === 0 ? (
+        <p className="font-body text-xs text-gray-400">No data yet</p>
+      ) : (
+        <ol className="space-y-1.5">
+          {top.map((r, i) => (
+            <li key={r.product_id}>
+              <Link to={`/admin/sarees/${r.product_id}`} className="flex items-baseline gap-2 font-body text-sm hover:text-maroon-900">
+                <span className="text-xs text-gray-400 w-3">{i + 1}</span>
+                <span className="flex-1 min-w-0 truncate"><span className="text-[11px] font-semibold text-gold-700">{r.code}</span> {r.name}</span>
+                <span className="font-semibold text-charcoal">{r[field]}</span>
+              </Link>
+            </li>
+          ))}
+        </ol>
+      )}
+    </div>
+  );
+};
+
 const Dashboard = () => {
   const { profile } = useAuth();
   const [stats, setStats] = useState(null);
@@ -19,6 +47,7 @@ const Dashboard = () => {
   const [action, setAction] = useState(null);
   const [alerts, setAlerts] = useState(null);
   const [shopLow, setShopLow] = useState(null);
+  const [insights, setInsights] = useState(null);
 
   useEffect(() => {
     Promise.all([
@@ -35,6 +64,8 @@ const Dashboard = () => {
       .select('id, color_name, stock, low_stock_threshold, product:products ( id, code, name, is_active )')
       .not('stock', 'is', null).eq('is_active', true).order('stock')
       .then(({ data }) => setAlerts((data ?? []).filter(v => v.product?.is_active && v.stock <= v.low_stock_threshold)));
+
+    fetchInsights(30).then(setInsights).catch(() => setInsights([]));
 
     // Private shop inventory: items at or below their warning level
     supabase.from('shop_items').select('qty, low_stock_threshold').eq('is_active', true)
@@ -110,6 +141,18 @@ const Dashboard = () => {
             <p className="font-body text-xs text-gray-500 mt-1">{label}</p>
           </div>
         ))}
+      </div>
+
+      <div className="bg-white rounded-lg shadow-soft border border-gray-50 p-5 mb-8">
+        <h2 className="font-heading text-xl font-semibold text-charcoal mb-1">Insights · last 30 days</h2>
+        <p className="font-body text-xs text-gray-500 mb-4">
+          What customers look at on the website (anonymous; your own clicks are not counted). Collected for future saree recommendations.
+        </p>
+        <div className="grid gap-5 md:grid-cols-3">
+          <TopList title="Most viewed" icon="visibility" rows={insights} field="views" />
+          <TopList title="Most wishlisted" icon="favorite" rows={insights} field="wishlists" />
+          <TopList title="Most added to bag" icon="shopping_bag" rows={insights} field="bag_adds" />
+        </div>
       </div>
 
       <div className="bg-white rounded-lg shadow-soft border border-gray-50 p-5 mb-8">

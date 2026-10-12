@@ -1,4 +1,5 @@
 import React, { createContext, useContext, useReducer, useEffect } from 'react';
+import { logEvent } from '../lib/events';
 
 const CartContext = createContext();
 
@@ -41,7 +42,10 @@ export const CartProvider = ({ children }) => {
     localStorage.setItem('vls_cart_v2', JSON.stringify(cart));
   }, [cart]);
 
-  const addToCart = (product) => dispatch({ type: 'ADD_ITEM', payload: product });
+  const addToCart = (product) => {
+    logEvent(product.productId, 'bag_add', product.id);     // product.id = the colour (variant) id
+    dispatch({ type: 'ADD_ITEM', payload: product });
+  };
   const removeFromCart = (id) => dispatch({ type: 'REMOVE_ITEM', payload: id });
   const updateQty = (id, qty) => dispatch({ type: 'UPDATE_QTY', payload: { id, qty } });
   const clearCart = () => dispatch({ type: 'CLEAR' });

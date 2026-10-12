@@ -4,6 +4,7 @@ import { useCart } from '../context/CartContext';
 import { useWishlist } from '../context/WishlistContext';
 import { SHOP, whatsappWith } from '../config/shop';
 import { supabase } from '../lib/supabase';
+import { logEvent } from '../lib/events';
 import {
   fetchProductBySlug, formatPrice, stockStatus, isOrderable, AVAILABILITY_NOTE,
 } from '../lib/catalogue';
@@ -46,7 +47,11 @@ const ProductDetail = () => {
   useEffect(() => {
     let cancelled = false;
     fetchProductBySlug(slug)
-      .then(product => { if (!cancelled) setLoaded({ slug, product, error: false }); })
+      .then(product => {
+        if (cancelled) return;
+        setLoaded({ slug, product, error: false });
+        if (product) logEvent(product.id, 'view');          // anonymous activity (lib/events.js)
+      })
       .catch(() => { if (!cancelled) setLoaded({ slug, product: null, error: true }); });
     return () => { cancelled = true; };
   }, [slug]);
