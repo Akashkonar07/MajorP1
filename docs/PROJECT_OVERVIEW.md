@@ -100,10 +100,24 @@ Migrations in `supabase/migrations/`, run in order:
 | 008_catalogue_variants | Colours, private base price + price rule, services, real categories |
 | 009_orders | Delivery quote, place order, UTR, customer cancel |
 | 010_admin_orders | Owner's order actions |
+| 011_product_events | Anonymous shopping activity + admin insights |
+| 012_image_embeddings | Photo fingerprints (pgvector), similar sarees, search by photo |
 
 ---
 
-## 5. Security
+## 5. Visual search (AI layer v1)
+
+| Part | How it works |
+|---|---|
+| Photo fingerprints | Every catalogue photo gets a 512-number CLIP ViT-B/32 embedding (`scripts/embed-catalogue.mjs`), stored in `product_image_embeddings` (pgvector, admin-only) |
+| Similar sarees | `similar_sarees()` compares a saree's average fingerprint with every other live saree |
+| Search by photo | The browser computes the customer's photo fingerprint (model downloaded once, 85 MB) and `search_by_embedding()` returns the closest live sarees; the photo is never uploaded |
+| Suggest details | Admin: colour from zero-shot prompts; category, fabric and occasions voted by the 7 most similar labelled sarees |
+| Shopping activity | `log_event()` records views, wishlist, bag and orders (no personal details) for future recommendations; admin dashboard shows the top sarees of the last 30 days |
+
+Evaluation on the real catalogue (543 photos, 49 designs): photo search Recall@1 86.6%, Recall@5 95.8%; colour tagging 58.8% (chance 7.1%). Full tables and limitations: [research/RESULTS.md](../research/RESULTS.md).
+
+## 5b. Security
 
 | Requirement | How it is enforced |
 |---|---|

@@ -112,7 +112,14 @@ const Collection = () => {
             {loading ? 'Loading...' : `${visible.length} saree${visible.length === 1 ? '' : 's'} found`}
           </p>
         </div>
-        <div className="flex items-center gap-3">
+        <div className="flex flex-wrap items-center gap-3">
+          <Link
+            to="/search/photo"
+            className="flex items-center gap-1.5 border border-maroon-900 text-maroon-900 rounded-sm px-3 py-2 text-sm font-body hover:bg-maroon-50 transition-colors"
+          >
+            <span className="material-symbols-outlined text-base">photo_camera</span>
+            Search by photo
+          </Link>
           {/* Mobile filter toggle */}
           <button
             onClick={() => setFilterOpen(!filterOpen)}

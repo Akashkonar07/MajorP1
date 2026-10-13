@@ -19,6 +19,7 @@ import About from './pages/About';
 import Services from './pages/Services';
 import Policies from './pages/Policies';
 import NotFound from './pages/NotFound';
+import PhotoSearch from './pages/PhotoSearch';
 import AdminRoute from './components/admin/AdminRoute';
 import AdminLayout from './components/admin/AdminLayout';
 import AdminLogin from './pages/admin/AdminLogin';
@@ -91,6 +92,7 @@ function App() {
                 <Route path="/about" element={<About />} />
                 <Route path="/services" element={<Services />} />
                 <Route path="/policies" element={<Policies />} />
+                <Route path="/search/photo" element={<PhotoSearch />} />
                 <Route path="*" element={<NotFound />} />
               </Route>
             </Routes>

@@ -5,6 +5,7 @@ import { COLOUR_FAMILIES, OCCASIONS, fetchCategories, formatPrice } from '../../
 import {
   websitePrice, fetchAdminProduct, setProductActive, adjustStock, uploadPhotos, deletePhotos, checkPhoto,
 } from '../../lib/admin';
+import { suggestDetails, indexPhotos } from '../../lib/vision';
 
 // Add a new saree or edit an existing one (project brief §6 "Adding new sarees").
 // New sarees are saved HIDDEN first, then colours + photos, then published if chosen.
@@ -77,6 +78,61 @@ const Photos = ({ value, onChange, label }) => {
         </label>
       </div>
       {error && <p className="font-body text-xs text-red-600 mt-1">{error}</p>}
+    </div>
+  );
+};
+
+// "Suggest details from photo": category / fabric / occasions from the most similar sarees
+// she has already labelled, main colour from the photo. Suggestions only — she taps Use.
+const SuggestPanel = ({ source, categories, excludeProductId, onUse }) => {
+  const [state, setState] = useState({ status: 'idle' });
+  const run = async () => {
+    setState({ status: 'working', progress: 0 });
+    try {
+      const result = await suggestDetails(source, { excludeProductId, onProgress: p => setState({ status: 'working', progress: p }) });
+      setState({ status: 'done', result });
+    } catch (e) {
+      setState({ status: 'error', error: e.message });
+    }
+  };
+  const r = state.result;
+  const category = r && categories.find(c => c.id === r.categoryId);
+  const chip = (label, value, use) => value ? (
+    <div className="flex items-center gap-2 font-body text-sm">
+      <span className="text-gray-500 w-24 shrink-0">{label}</span>
+      <span className="font-semibold text-charcoal flex-1">{value}</span>
+      <button type="button" onClick={use} className="px-2.5 py-1 rounded-sm border border-maroon-900 text-maroon-900 text-xs hover:bg-maroon-50">Use</button>
+    </div>
+  ) : null;
+
+  return (
+    <div className="sm:col-span-2 rounded-lg border border-gold-700/30 bg-cream/70 p-4">
+      <div className="flex flex-wrap items-center gap-3">
+        <span className="material-symbols-outlined text-gold-700">auto_awesome</span>
+        <p className="font-body text-sm text-charcoal flex-1 min-w-[180px]">
+          <span className="font-semibold">Suggest details from photo</span>
+          <span className="block text-xs text-gray-500">
+            {source ? 'Uses the first photo of the first colour. You decide what to keep.' : 'Add a photo in Colours below first.'}
+          </span>
+        </p>
+        <button type="button" disabled={!source || state.status === 'working'} onClick={run} className="btn-secondary !py-2 !px-4 text-sm disabled:opacity-50">
+          {state.status === 'working' ? (state.progress ? `Loading model ${state.progress}%` : 'Looking…') : 'Suggest'}
+        </button>
+      </div>
+      {state.status === 'error' && <p className="font-body text-xs text-red-600 mt-2">Could not suggest: {state.error}</p>}
+      {r && (
+        <div className="mt-3 space-y-2">
+          {chip('Category', category?.name, () => onUse({ category_id: r.categoryId }))}
+          {chip('Fabric', r.fabric, () => onUse({ fabric: r.fabric }))}
+          {chip('Occasions', r.occasions.join(', '), () => onUse({ occasions: r.occasions }))}
+          {chip('Main colour', r.colour, () => onUse({ colourName: r.colour }))}
+          <div className="flex flex-wrap items-center gap-3 pt-1">
+            <button type="button" onClick={() => onUse({ category_id: r.categoryId, fabric: r.fabric, occasions: r.occasions, colourName: r.colour })}
+              className="btn-primary !py-1.5 !px-3 text-xs">Use all</button>
+            {r.basedOn.length > 0 && <span className="font-body text-[11px] text-gray-500">Based on similar sarees: {r.basedOn.join(', ')}</span>}
+          </div>
+        </div>
+      )}
     </div>
   );
 };
@@ -154,6 +210,7 @@ const SareeForm = () => {
     if (problems.length) { window.scrollTo(0, 0); return; }
 
     setSaving(true);
+    const newPhotos = [];                          // [{ imageId, file }] to index for photo search
     let productId = product?.id ?? null;
     let code = product?.code ?? null;
     try {
@@ -224,7 +281,7 @@ const SareeForm = () => {
         if (c.files.length) {
           setProgress(`Uploading ${c.files.length} photo(s) for ${c.color_name}…`);
           const kept = c.existing.filter(i => !c.removeIds.includes(i.id)).length;
-          await uploadPhotos({ productId, code, variantId, colourName: c.color_name, files: c.files.map(f => f.file), startOrder: kept });
+          newPhotos.push(...await uploadPhotos({ productId, code, variantId, colourName: c.color_name, files: c.files.map(f => f.file), startOrder: kept }));
         }
       }
 
@@ -232,7 +289,7 @@ const SareeForm = () => {
       await deletePhotos(form.shared.existing.filter(i => form.shared.removeIds.includes(i.id)));
       if (form.shared.files.length) {
         setProgress('Uploading shared photos…');
-        await uploadPhotos({ productId, code, variantId: null, colourName: null, files: form.shared.files.map(f => f.file), startOrder: 100 });
+        newPhotos.push(...await uploadPhotos({ productId, code, variantId: null, colourName: null, files: form.shared.files.map(f => f.file), startOrder: 100 }));
       }
 
       // 5. Publish / hide
@@ -242,7 +299,11 @@ const SareeForm = () => {
       const fresh = await fetchAdminProduct(productId);
       setProduct(fresh);
       setForm(fromProduct(fresh));
-      const message = publish ? `${code} is live on the website.` : publish === false ? `${code} saved as hidden.` : `${code} saved.`;
+      let message = publish ? `${code} is live on the website.` : publish === false ? `${code} saved as hidden.` : `${code} saved.`;
+      if (newPhotos.length) {
+        indexPhotos(newPhotos);                     // background: adds the new photos to "Search by photo" + "Similar sarees"
+        message += ' New photos are being added to photo search in the background — keep this page open for a minute.';
+      }
       setNotice(message);
       if (isNew) navigate(`/admin/sarees/${productId}`, { replace: true, state: { notice: message } });
       window.scrollTo(0, 0);
@@ -283,6 +344,21 @@ const SareeForm = () => {
       <div className="space-y-6">
         {/* Details */}
         <section className="bg-white rounded-lg shadow-soft p-5 border border-gray-50 grid gap-4 sm:grid-cols-2">
+          <SuggestPanel
+            source={liveColours[0]?.files[0]?.file ?? liveColours[0]?.existing.find(i => !liveColours[0].removeIds.includes(i.id))?.url
+              ?? form.shared.files[0]?.file ?? null}
+            categories={categories}
+            excludeProductId={product?.id}
+            onUse={u => setForm(f => ({
+              ...f,
+              ...(u.category_id ? { category_id: u.category_id } : {}),
+              ...(u.fabric ? { fabric: u.fabric } : {}),
+              ...(u.occasions?.length ? { occasions: u.occasions } : {}),
+              ...(u.colourName && f.colours[0] && !f.colours[0].color_name.trim()
+                ? { colours: f.colours.map((c, i) => (i === 0 ? { ...c, color_name: u.colourName, ...(c.hexTouched ? {} : { color_hex: guessHex(u.colourName) }) } : c)) }
+                : {}),
+            }))}
+          />
           <div className="sm:col-span-2">
             <Field label="Saree name"><input className="input-field" value={form.name} onChange={e => set('name', e.target.value)} /></Field>
           </div>

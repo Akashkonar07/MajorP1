@@ -55,6 +55,10 @@ const run = async (label, db) => {
   check('cannot see admin insights', !!(await db.rpc('admin_product_insights', { p_days: 30 })).error);
   check('log_event rejects an unknown saree', !!(await db.rpc('log_event', { p_product_id: '00000000-0000-0000-0000-000000000000', p_event: 'view', p_session_id: 'security-check' })).error);
   check('log_event rejects a fake order event', !!(await db.rpc('log_event', { p_product_id: products.data?.[0]?.id, p_event: 'order_placed', p_session_id: 'security-check' })).error);
+  // Visual search (012): fingerprints are admin-only; search functions validate input
+  check('cannot read photo fingerprints', blocked(await db.from('product_image_embeddings').select('*')));
+  check('cannot save photo fingerprints', !!(await db.rpc('admin_save_embedding', { p_image_id: '00000000-0000-0000-0000-000000000000', p_embedding: JSON.stringify(new Array(512).fill(0.01)) })).error);
+  check('photo search rejects a wrong-size fingerprint', !!(await db.rpc('search_by_embedding', { p_embedding: '[1,2,3]', p_limit: 5 })).error);
   const upload = await db.storage.from('product-images')
     .upload(`security-check-${Date.now()}.png`, new Blob(['x'], { type: 'image/png' }));
   check('cannot upload photos', !!upload.error, upload.error?.message);

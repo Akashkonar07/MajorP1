@@ -114,6 +114,10 @@ const Policies = () => {
           logged in). It never contains your name, phone, email or address. We use it only to improve which sarees we show, and we
           never sell or share it.
         </p>
+        <p>
+          <span className="font-semibold text-charcoal">Search by photo.</span> When you search with a photo, it is analysed inside your own
+          browser and is never uploaded or saved. Only a list of numbers describing the photo is sent to find similar sarees.
+        </p>
         <ul>
           <li>We use these details only to process and deliver your orders and to contact you about them. Your address and phone are shared with the courier for delivery only.</li>
           <li>We never sell or share your details for advertising. We do not use advertising or tracking cookies.</li>

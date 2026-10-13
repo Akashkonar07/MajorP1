@@ -94,7 +94,8 @@ export async function compressPhoto(file) {
 
 const slugPart = text => text.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '') || 'photo';
 
-// Uploads photos for one colour (variantId) or shared photos (variantId = null) and saves their rows
+// Uploads photos for one colour (variantId) or shared photos (variantId = null), saves their rows
+// and returns [{ imageId, file }] for the new photos
 export async function uploadPhotos({ productId, code, variantId, colourName, files, startOrder = 0 }) {
   const rows = [];
   for (const [i, file] of files.entries()) {
@@ -106,10 +107,11 @@ export async function uploadPhotos({ productId, code, variantId, colourName, fil
     if (error) throw error;
     rows.push({ product_id: productId, variant_id: variantId, storage_path: path, sort_order: startOrder + i });
   }
-  if (rows.length) {
-    const { error } = await supabase.from('product_images').insert(rows);
-    if (error) throw error;
-  }
+  if (!rows.length) return [];
+  const { data, error } = await supabase.from('product_images').insert(rows).select('id, storage_path');
+  if (error) throw error;
+  // Pair each new photo row with its original file (used to index it for visual search)
+  return data.map(r => ({ imageId: r.id, file: files[rows.findIndex(x => x.storage_path === r.storage_path)] }));
 }
 
 export async function deletePhotos(images) {

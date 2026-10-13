@@ -5,6 +5,7 @@ import { useWishlist } from '../context/WishlistContext';
 import { SHOP, whatsappWith } from '../config/shop';
 import { supabase } from '../lib/supabase';
 import { logEvent } from '../lib/events';
+import SimilarSarees from '../components/SimilarSarees';
 import {
   fetchProductBySlug, formatPrice, stockStatus, isOrderable, AVAILABILITY_NOTE,
 } from '../lib/catalogue';
@@ -343,6 +344,8 @@ const ProductDetail = () => {
         </div>
 
         {/* WHY SHOP WITH US */}
+        <SimilarSarees productId={product.id} />
+
         <section className="mt-16 text-center">
           <p className="section-label mb-2">Our Promise</p>
           <h2 className="font-heading text-4xl font-semibold text-charcoal mb-3">Why Shop With Us</h2>

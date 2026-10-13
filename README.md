@@ -40,6 +40,13 @@ Customers browse the shop's real catalogue, choose a colour, add fall beading / 
 - **Settings**: UPI ID, delivery charges and tailoring prices; categories; customer list; read-only activity log; **CSV backup** of sarees, orders, customers and stock
 - **Two separate inventories**: online stock for the website, and a private in-shop stock record (items, stock in / sold / damaged, history, low-stock list)
 
+### Visual search (AI layer, v1)
+- **Search by photo** (`/search/photo`): upload or take a photo of any saree and see the most similar sarees in the shop. The photo is analysed in the customer's own browser (CLIP ViT-B/32 via transformers.js) and never uploaded
+- **Similar sarees** on every saree page, from visual fingerprints stored in PostgreSQL (pgvector)
+- **Suggest details from photo** for the owner when adding a saree: colour from the photo, category / fabric / occasions from the most similar sarees she has already labelled
+- Measured on the real catalogue (543 photos): photo search finds the right saree first **86.6%** of the time and in the top 5 **95.8%** — see [research/RESULTS.md](research/RESULTS.md)
+- Anonymous shopping activity (views, wishlist, bag, orders) is recorded for future recommendations; only admins can read it
+
 ### Security
 - **Row Level Security on every table** — customers can only see their own orders, addresses and profile
 - The owner's base prices and in-shop stock are **admin-only, even for reading**
@@ -123,7 +130,7 @@ server/                 early Express prototype — no longer used, to be remove
 ## Future scope (Semester VIII)
 - Cash on Delivery and courier integration (after the shop signs a delivery partner)
 - Hindi and Marathi interface
-- Smart features: tagging a saree from its photo, search by photo, recommendations, demand insights from real orders
+- Recommendations from shopping activity, Hindi / Marathi text search, demand insights from real orders
 
 ---
 

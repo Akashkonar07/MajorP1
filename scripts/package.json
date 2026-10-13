@@ -4,9 +4,11 @@
   "type": "module",
   "description": "Admin-only scripts (run on the lead's laptop). Never deployed.",
   "scripts": {
-    "seed": "node --env-file=.env seed-catalogue.mjs"
+    "seed": "node --env-file=.env seed-catalogue.mjs",
+    "embed": "node --env-file=.env embed-catalogue.mjs"
   },
   "dependencies": {
+    "@huggingface/transformers": "^3.7.5",
     "@supabase/supabase-js": "^2.117.3"
   }
 }
