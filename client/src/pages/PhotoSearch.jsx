@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { fetchCatalogue, formatPrice } from '../lib/catalogue';
 import { checkPhoto } from '../lib/admin';
@@ -13,7 +13,13 @@ const PhotoSearch = () => {
   const [preview, setPreview] = useState(null);
   const [state, setState] = useState({ status: 'idle' });   // idle | loading | done | error
 
+  const resultsRef = useRef(null);
+
   useEffect(() => { fetchCatalogue().then(setCatalogue).catch(() => {}); }, []);
+  // On phones the results sit below the photo: bring them into view when ready
+  useEffect(() => {
+    if (state.status === 'done' || state.status === 'error') resultsRef.current?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+  }, [state.status]);
   useEffect(() => () => { if (preview) URL.revokeObjectURL(preview); }, [preview]);
 
   const pick = async e => {
@@ -51,7 +57,7 @@ const PhotoSearch = () => {
       </p>
 
       <div className="grid md:grid-cols-[260px,1fr] gap-8 items-start">
-        <div className="space-y-3">
+        <div className="space-y-3 max-w-[220px] w-full mx-auto md:max-w-none">
           <label className="block aspect-[3/4] rounded-lg border-2 border-dashed border-gray-300 hover:border-maroon-900 bg-white overflow-hidden cursor-pointer relative">
             {preview ? <img src={preview} alt="Your photo" className="w-full h-full object-cover" /> : (
               <span className="absolute inset-0 flex flex-col items-center justify-center text-gray-400 font-body text-sm gap-2">
@@ -72,7 +78,7 @@ const PhotoSearch = () => {
           </p>
         </div>
 
-        <div>
+        <div ref={resultsRef} className="scroll-mt-20">
           {state.status === 'idle' && (
             <p className="font-body text-sm text-gray-500 py-10 text-center md:text-left">Your matches will appear here.</p>
           )}

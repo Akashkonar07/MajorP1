@@ -43,6 +43,10 @@ Leave-one-photo-out over all 543 photos: each photo is the query, all others are
 
 **Finding:** photo search finds the right saree first **87% of the time** and within the top 5 **96%** of the time — about 38× better than random. Telling apart colours of the *same* design from one photo is much harder (20–24% at rank 1), because many supplier photos show several colours together.
 
+### Robustness spot-check on the live system (13 Oct 2026)
+
+9 main photos (every 6th saree) were altered to look like a customer's screenshot: centre crop to 70 %, shrunk to 400 px wide, brighter, JPEG quality 60. Searched through the deployed website database as an anonymous visitor: the right saree was **first for 5 of 9** and **in the top 5 for 8 of 9**. Small sample; a full robustness study (crops, phone photos of printed images, lighting) is future work.
+
 ## RQ3 — Cost
 
 | Model | Embedding time per photo (laptop CPU) | First-time model download in the browser |

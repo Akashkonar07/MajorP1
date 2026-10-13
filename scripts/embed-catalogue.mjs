@@ -36,6 +36,19 @@ async function fetchAll(table, columns) {
   }
 }
 
+// Downloads a photo with a time limit and up to 3 tries (a stuck download must not stop the run)
+async function download(photoUrl) {
+  for (let attempt = 1; ; attempt++) {
+    try {
+      const res = await fetch(photoUrl, { signal: AbortSignal.timeout(20000) });
+      if (!res.ok) throw new Error(`HTTP ${res.status}`);
+      return await res.blob();
+    } catch (e) {
+      if (attempt === 3) throw e;
+    }
+  }
+}
+
 const unit = values => {
   const n = Math.hypot(...values);
   return values.map(x => x / n);
@@ -58,7 +71,7 @@ const started = Date.now();
 for (const [n, img] of todo.entries()) {
   try {
     const photoUrl = `${url}/storage/v1/object/public/products/${img.storage_path}`;
-    const image = await RawImage.fromURL(photoUrl);
+    const image = await RawImage.fromBlob(await download(photoUrl));
     const { image_embeds } = await vision(await processor(image));
     const embedding = unit(Array.from(image_embeds.data));
     const { error } = await db.from('product_image_embeddings').upsert({
@@ -76,4 +89,4 @@ for (const [n, img] of todo.entries()) {
 }
 console.log(`Done: ${ok} saved, ${failed.length} failed`);
 for (const f of failed) console.log('  ✗', f);
-process.exit(failed.length ? 1 : 0);
+process.exitCode = failed.length ? 1 : 0;
